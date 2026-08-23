@@ -5,28 +5,28 @@ import Section from "@/components/ui/Section";
 const processSteps = [
   {
     number: "01",
-    label: "WRITE",
-    title: "Write",
+    label: "Director-Led",
+    title: "Directors first",
     description:
-      "Every film starts as a real script — a character, a conflict, a reason to keep watching.",
+      "We direct every creative choice, using AI as a filmmaking tool to bring our stories, characters, and vision to life.",
   },
   {
     number: "02",
-    label: "GENERATE",
-    title: "Generate",
+    label: "Cinematic",
+    title: "Cinematic",
     description:
-      "We direct AI models frame by frame to build the world, the cast and every performance in it.",
+      "We craft every frame with cinematic intention, from composition and lighting to movement and atmosphere, creating films that feel immersive, emotional, and alive.",
   },
   {
     number: "03",
-    label: "RELEASE",
-    title: "Release",
+    label: "AI-Native",
+    title: "AI-Native",
     description:
-      "Finished films go straight to our audience on YouTube, free to watch.",
-    link: {
-      label: "YouTube",
-      href: "https://youtube.com/@nadidove",
-    },
+      "Built from the ground up with AI at the heart of our creative process, allowing us to explore new visual possibilities and bring ambitious stories to life.",
+    // link: {
+    //   label: "YouTube",
+    //   href: "https://youtube.com/@nadidove",
+    // },
   },
 ];
 
@@ -35,17 +35,18 @@ export default function Process() {
     <Section className="positioning">
       <Container>
         <div className="positioning-head">
-          <Eyebrow>How We Work</Eyebrow>
+         
 
           <h2>
-            An AI-powered filmmaking studio, start to finish.
+           AI-powered production studio.
           </h2>
 
           <p>
-            Every Nadidove film is written, directed and generated using AI —
-            no cameras, no sets, no crew. We build the world, the characters
-            and the performances entirely through generative tools, then edit
-            and score each short like any other production.
+            We make films, not samples. Nadidove combines cutting-edge AI with 
+            world-class directing to produce content that rivals
+             traditional production — at unprecedented speed.
+
+
           </p>
         </div>
 
@@ -63,7 +64,7 @@ export default function Process() {
 
               <p>
                 {step.description}{" "}
-                {step.link && (
+                {/* {step.link && (
                   <a
                     href={step.link.href}
                     target="_blank"
@@ -71,7 +72,7 @@ export default function Process() {
                   >
                     {step.link.label}
                   </a>
-                )}
+                )} */}
               </p>
             </article>
           ))}
