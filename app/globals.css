@@ -606,17 +606,6 @@ h3 {
 }
 
 
-.hero-description {
-  max-width: 620px;
-
-  margin-top: 28px;
-
-  color: rgba(242, 238, 232, 0.78);
-
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
-}
-
-
 .hero-action {
   margin-top: 24px;
 }
@@ -1515,10 +1504,6 @@ h3 {
   z-index: 1000;
 }
 
-.mobile-menu-toggle {
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-}
-
   .header-inner {
     height: 68px;
     display: flex;
@@ -1817,6 +1802,12 @@ h3 {
   gap: 24px;
 
   margin-bottom: 16px;
+}
+
+/* `min-width: 0` lets a long film title wrap or ellipsise inside the flex
+   row instead of pushing the Close button past the panel edge. */
+.lightbox-titles {
+  min-width: 0;
 }
 
 .lightbox-title {

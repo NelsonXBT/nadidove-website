@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import {
-  categoryLabels,
+  categoryNames,
   youtubeThumbnail,
   type Film,
 } from "@/lib/films";
@@ -70,7 +70,7 @@ export default function FilmCard({
 
       <div className="film-card-content">
         <div className="film-card-meta">
-          <span>{categoryLabels[film.category]}</span>
+          <span>{categoryNames[film.category]}</span>
           <span>{film.year}</span>
         </div>
 
@@ -86,7 +86,7 @@ export default function FilmCard({
           onClick={() => onPlay?.(film)}
         >
           <span className="sr-only">
-            Play {film.title} — {categoryLabels[film.category]}, {film.year}
+            Play {film.title} — {categoryNames[film.category]}, {film.year}
           </span>
         </button>
       )}

@@ -7,6 +7,7 @@ import VideoLightbox from "@/components/ui/VideoLightbox";
 import {
   availableCategories,
   categoryLabels,
+  categoryNames,
   type Film,
   type FilmCategory,
 } from "@/lib/films";
@@ -82,7 +83,7 @@ export default function FilmGallery({
         <VideoLightbox
           youtubeId={activeFilm.youtubeId}
           title={activeFilm.title}
-          meta={`${categoryLabels[activeFilm.category]} · ${activeFilm.year}`}
+          meta={`${categoryNames[activeFilm.category]} · ${activeFilm.year}`}
           onClose={() => setActiveFilm(null)}
         />
       )}
