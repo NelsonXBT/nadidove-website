@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 export default function HeroMedia() {
@@ -8,12 +9,16 @@ export default function HeroMedia() {
 
   return (
     <div className="hero-media">
-      <img
+      {/* The poster is the LCP element, so it is optimised and preloaded. */}
+      <Image
         className={`hero-media-poster ${
           videoReady && !videoFailed ? "hero-media-poster-hidden" : ""
         }`}
         src="/media/hero/nadidove-hero-poster.jpg"
         alt=""
+        fill
+        sizes="100vw"
+        priority
         aria-hidden="true"
       />
 
@@ -31,10 +36,7 @@ export default function HeroMedia() {
           onCanPlay={() => setVideoReady(true)}
           onError={() => setVideoFailed(true)}
         >
-          <source
-            src="/media/hero/nadidove-hero.mp4"
-            type="video/mp4"
-          />
+          <source src="/media/hero/nadidove-hero.mp4" type="video/mp4" />
         </video>
       )}
 

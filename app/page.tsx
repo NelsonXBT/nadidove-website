@@ -1,11 +1,11 @@
+import ContactCta from "@/components/home/ContactCta";
+import FilmsPreview from "@/components/home/FilmsPreview";
 import Hero from "@/components/home/Hero";
 import Process from "@/components/home/Process";
-import FilmsPreview from "@/components/home/FilmsPreview";
-import ContactCta from "@/components/home/ContactCta";
 
 export default function Home() {
   return (
-    <main>
+    <main id="main">
       <Hero />
       <Process />
       <FilmsPreview />

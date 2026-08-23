@@ -1,65 +1,95 @@
-import Link from "next/link";
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+
+import {
+  categoryLabels,
+  youtubeThumbnail,
+  type Film,
+} from "@/lib/films";
 
 interface FilmCardProps {
-  number: string;
-  title: string;
-  description: string;
-  type?: string;
-  year?: string;
-  href?: string;
-  image?: string;
-  tone?: "ember" | "gold" | "teal" | "blue" | "rose" | "violet";
+  film: Film;
+  /** Called when a film with a video is activated. */
+  onPlay?: (film: Film) => void;
+  /** Applied to the first card in a viewport-filling grid. */
+  priority?: boolean;
 }
 
-export default function FilmCard({
-  number,
-  title,
-  description,
-  type = "Short Film",
-  year = "2026",
-  href = "/our-work",
-  image,
-  tone = "ember",
-}: FilmCardProps) {
-  return (
-    <article className="film-card">
-      <Link href={href} className="film-card-link">
-        <div className={`film-card-media film-tone-${tone}`}>
-          {image ? (
-            <img
-              src={image}
-              alt=""
-              className="film-card-image"
-            />
-          ) : (
-            <div className="film-card-placeholder">
-              <span>FILM {number}</span>
-            </div>
-          )}
+const IMAGE_SIZES =
+  "(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw";
 
+export default function FilmCard({
+  film,
+  onPlay,
+  priority = false,
+}: FilmCardProps) {
+  // YouTube only generates `maxresdefault` for videos above 720p, so fall
+  // back to `hqdefault` — which always exists — if the first request 404s.
+  const [thumbnailQuality, setThumbnailQuality] = useState<"max" | "hq">(
+    "max",
+  );
+
+  const playable = Boolean(film.youtubeId) && Boolean(onPlay);
+
+  const poster =
+    film.poster ??
+    (film.youtubeId
+      ? youtubeThumbnail(film.youtubeId, thumbnailQuality)
+      : null);
+
+  return (
+    <article className={`film-card film-tone-${film.tone}`}>
+      <div className="film-card-media">
+        {poster ? (
+          <Image
+            src={poster}
+            alt={`Still from ${film.title}`}
+            fill
+            sizes={IMAGE_SIZES}
+            priority={priority}
+            className="film-card-image"
+            onError={() => setThumbnailQuality("hq")}
+          />
+        ) : (
+          <div className="film-card-placeholder" aria-hidden="true" />
+        )}
+
+        {playable ? (
           <div className="film-card-overlay">
-            <span className="film-card-watch">
-              View Film
-              <span aria-hidden="true">↗</span>
+            <span className="film-card-play">
+              <span className="film-card-play-icon" aria-hidden="true" />
+              Watch Film
             </span>
           </div>
+        ) : (
+          <span className="film-card-status">In Production</span>
+        )}
+      </div>
+
+      <div className="film-card-content">
+        <div className="film-card-meta">
+          <span>{categoryLabels[film.category]}</span>
+          <span>{film.year}</span>
         </div>
 
-        <div className="film-card-content">
-          <div className="film-card-meta">
-            <span>{type}</span>
-            <span>{year}</span>
-          </div>
+        <h3 className="film-card-title">{film.title}</h3>
 
-          <h3 className="film-card-title">
-            {title}
-          </h3>
+        <p className="film-card-description">{film.logline}</p>
+      </div>
 
-          <p className="film-card-description">
-            {description}
-          </p>
-        </div>
-      </Link>
+      {playable && (
+        <button
+          type="button"
+          className="film-card-action"
+          onClick={() => onPlay?.(film)}
+        >
+          <span className="sr-only">
+            Play {film.title} — {categoryLabels[film.category]}, {film.year}
+          </span>
+        </button>
+      )}
     </article>
   );
 }

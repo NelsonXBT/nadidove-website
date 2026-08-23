@@ -1,133 +1,67 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-const films = [
-  {
-    number: "01",
-    title: "The Ember Warden",
-    description:
-      "A mage trades his own flame to keep an ancient order of fire alive.",
-    tone: "one",
-  },
-  {
-    number: "02",
-    title: "He Cock",
-    description:
-      "A rooster alone keeps the sun on schedule — and he's sick of the job.",
-    tone: "two",
-  },
-  {
-    number: "03",
-    title: "The Receipt",
-    description:
-      "A Lagos hustle goes sideways when one small receipt won't disappear.",
-    tone: "three",
-  },
-  {
-    number: "04",
-    title: "Threadbare",
-    description:
-      "A family holds itself together with a little less thread every year.",
-    tone: "four",
-  },
-  {
-    number: "05",
-    title: "Ring Road Drop Off",
-    description:
-      "One ride, one road, one decision that can't be undone.",
-    tone: "five",
-  },
-  {
-    number: "06",
-    title: "Unreconciled",
-    description:
-      "Two siblings, one inheritance, and everything they never said.",
-    tone: "six",
-  },
-];
+import Container from "@/components/ui/Container";
+import Eyebrow from "@/components/ui/Eyebrow";
+import FilmGallery from "@/components/ui/FilmGallery";
+import Section from "@/components/ui/Section";
+import { films } from "@/lib/films";
+import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Our Work",
+  description:
+    "The Nadidove catalogue — original short films and animations written, directed and generated in-house.",
+  alternates: { canonical: "/our-work" },
+};
 
 export default function OurWorkPage() {
   return (
-    <main>
-
+    <main id="main">
       <section className="page-intro">
-        <div className="container">
+        <Container>
+          <Eyebrow>Portfolio</Eyebrow>
 
-          <p className="eyebrow">Our Work</p>
-
-          <h1 className="heading-xl">
-            Six worlds so far.
-            <br />
-            More every month.
-          </h1>
-
-          <p className="body-lg">
-            Original stories written, generated and brought to life by
-            Nadidove.
-          </p>
-
-        </div>
+          <h1 className="heading-xl">Our Work</h1>
+        </Container>
       </section>
 
+      <Section className="films-section">
+        <Container>
+          <FilmGallery films={films} showFilters />
+        </Container>
+      </Section>
 
-      <section className="section films-section">
-        <div className="container">
+      <Section className="page-cta">
+        <Container className="page-cta-inner">
+          <div>
+            <Eyebrow>The Channel</Eyebrow>
 
-          <div className="film-grid">
+            <h2>Every release, first.</h2>
 
-            {films.map((film) => (
-              <article className="film-card" key={film.number}>
-
-                <a
-                  href="https://youtube.com/@nadidove"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="film-card-link"
-                >
-
-                  <div className={`film-card-media film-tone-${film.tone}`}>
-
-                    <span className="film-card-number">
-                      FILM {film.number}
-                    </span>
-
-                    <div className="film-card-overlay">
-
-                      <span className="film-card-watch">
-                        Watch Film
-                        <span aria-hidden="true">→</span>
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                  <div className="film-card-content">
-
-                    <div className="film-card-meta">
-                      <span>Short Film</span>
-                      <span>2026</span>
-                    </div>
-
-                    <h2 className="film-card-title">
-                      {film.title}
-                    </h2>
-
-                    <p className="film-card-description">
-                      {film.description}
-                    </p>
-
-                  </div>
-
-                </a>
-
-              </article>
-            ))}
-
+            <p>
+              New films drop on YouTube before anywhere else. Subscribe and
+              you will not miss one.
+            </p>
           </div>
 
-        </div>
-      </section>
+          <div className="page-cta-actions">
+            <a
+              href={site.youtube}
+              className="button button--primary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Watch on YouTube
+              <span aria-hidden="true">↗</span>
+            </a>
 
+            <Link href="/contact" className="button button--secondary">
+              Work With Us
+            </Link>
+          </div>
+        </Container>
+      </Section>
     </main>
   );
 }

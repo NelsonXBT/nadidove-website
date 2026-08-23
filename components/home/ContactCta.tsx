@@ -10,19 +10,14 @@ export default function ContactCta() {
       <Container className="contact-inner">
         <Eyebrow>Get In Touch</Eyebrow>
 
-        <h2>
-          Have a project, a brand, or a story in mind?
-        </h2>
+        <h2>Let&rsquo;s Talk</h2>
 
         <p>
-          Tell us what you're picturing — a sponsored short, a series, or
-          something we haven't made yet. We'll get back within a few days.
+          Interested in working together? Tell us what you have in mind and
+          we will be in touch shortly.
         </p>
 
-        <Link
-          href="/contact"
-          className="button button--primary"
-        >
+        <Link href="/contact" className="button button--primary">
           Contact Us
         </Link>
       </Container>

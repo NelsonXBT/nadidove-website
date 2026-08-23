@@ -1,80 +1,199 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import Container from "@/components/ui/Container";
+import Eyebrow from "@/components/ui/Eyebrow";
+import Section from "@/components/ui/Section";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Nadidove is an AI-native film studio. We write, direct and generate original stories end to end — then release them straight to the audience.",
+  alternates: { canonical: "/about" },
+};
+
+const processSteps = [
+  {
+    number: "01",
+    label: "Write",
+    title: "Write",
+    description:
+      "Every film starts on the page — a real story, real characters and a reason to keep watching. Nothing gets generated until the script earns it.",
+  },
+  {
+    number: "02",
+    label: "Generate",
+    title: "Generate",
+    description:
+      "We direct AI models shot by shot to build the world, the cast and the performances, holding continuity and tone across every frame.",
+  },
+  {
+    number: "03",
+    label: "Release",
+    title: "Release",
+    description:
+      "Each film is edited, graded and scored as a complete production, then released directly to our audience.",
+  },
+];
+
+const capabilities = [
+  {
+    number: "01",
+    title: "Original Short Films",
+    description:
+      "Our own IP, written and produced in-house and released on our channel.",
+  },
+  {
+    number: "02",
+    title: "Animation",
+    description:
+      "Stylised, character-led work for stories live action cannot reach.",
+  },
+  {
+    number: "03",
+    title: "Brand & Sponsored Films",
+    description:
+      "Cinematic films for brands who want story before spec sheet.",
+  },
+  {
+    number: "04",
+    title: "Series Development",
+    description:
+      "Worlds built to run past one episode — pitch, pilot and beyond.",
+  },
+];
+
 export default function AboutPage() {
   return (
-    <main>
-
+    <main id="main">
       <section className="page-intro">
-        <div className="container">
-
-          <p className="eyebrow">About Nadidove</p>
+        <Container>
+          <Eyebrow>About</Eyebrow>
 
           <h1 className="heading-xl">
-            An AI-powered filmmaking studio,
+            A film studio built
             <br />
-            start to finish.
+            for what comes next.
           </h1>
 
           <p className="body-lg">
             Nadidove is a creative film studio creating original stories
             through imagination, technology and film.
           </p>
-
-        </div>
+        </Container>
       </section>
 
+      <Section className="statement">
+        <Container className="statement-inner">
+          <p className="statement-label">The Studio</p>
 
-      <section className="section positioning">
-        <div className="container">
-
-          <div className="positioning-head">
-
-            <p className="eyebrow">How We Work</p>
-
-            <h2>
-              We build the entire production from story to screen.
-            </h2>
-
-            <p>
-              Every Nadidove film is written, directed and generated using AI.
-              We build the world, the characters and the performances through
-              generative tools, then edit and score each film as a complete
-              production.
+          <div className="statement-body">
+            <p className="statement-lead">
+              We are directors first. AI is the camera, the crew and the
+              backlot — not the author.
             </p>
 
+            <p>
+              Nadidove writes, directs and generates original films start to
+              finish. There is no department to book, no gear list and no
+              window of good light to wait for. There is a script, a
+              direction, and a film at the end of it.
+            </p>
+
+            <p>
+              That changes what a studio our size can attempt. A world that
+              would once have needed a production budget and a six-month
+              schedule now needs a clear idea and the discipline to hold it
+              across every frame. We build the world, the characters and the
+              performances through generative tools, then edit and score each
+              film as a complete production.
+            </p>
+
+            <p>
+              We are based in Africa and making work for anyone, anywhere,
+              who still sits down for a good story.
+            </p>
+          </div>
+        </Container>
+      </Section>
+
+      <Section className="positioning">
+        <Container>
+          <div className="positioning-head">
+            <Eyebrow>How We Work</Eyebrow>
+
+            <h2>From story to screen, under one roof.</h2>
+
+            <p>
+              Three stages, one team. Every Nadidove film moves through the
+              same pipeline — and every creative decision inside it is ours.
+            </p>
           </div>
 
           <div className="process">
+            {processSteps.map((step) => (
+              <article className="process-step" key={step.number}>
+                <span className="step-num">
+                  {step.number} — {step.label.toUpperCase()}
+                </span>
 
-            <div className="process-step">
-              <span className="step-num">01 — WRITE</span>
-              <h3>Write</h3>
-              <p>
-                Every film starts with a real story, real characters and a
-                reason to keep watching.
-              </p>
-            </div>
+                <h3>{step.title}</h3>
 
-            <div className="process-step">
-              <span className="step-num">02 — GENERATE</span>
-              <h3>Generate</h3>
-              <p>
-                We direct AI models frame by frame to build the world, cast
-                and performances.
-              </p>
-            </div>
+                <p>{step.description}</p>
+              </article>
+            ))}
+          </div>
+        </Container>
+      </Section>
 
-            <div className="process-step">
-              <span className="step-num">03 — RELEASE</span>
-              <h3>Release</h3>
-              <p>
-                Finished films are released directly to our audience.
-              </p>
-            </div>
-
+      <Section className="capabilities">
+        <Container>
+          <div className="section-head">
+            <h2>What We Make</h2>
           </div>
 
-        </div>
-      </section>
+          <ul className="capability-list">
+            {capabilities.map((capability) => (
+              <li className="capability" key={capability.number}>
+                <span className="capability-number">
+                  {capability.number}
+                </span>
 
+                <h3 className="capability-title">{capability.title}</h3>
+
+                <p className="capability-description">
+                  {capability.description}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </Section>
+
+      <Section className="page-cta">
+        <Container className="page-cta-inner">
+          <div>
+            <Eyebrow>Next</Eyebrow>
+
+            <h2>See what we have made.</h2>
+
+            <p>
+              The catalogue is the clearest answer to what the studio does.
+            </p>
+          </div>
+
+          <div className="page-cta-actions">
+            <Link href="/our-work" className="button button--primary">
+              View Our Work
+              <span aria-hidden="true">→</span>
+            </Link>
+
+            <Link href="/contact" className="button button--secondary">
+              Get In Touch
+            </Link>
+          </div>
+        </Container>
+      </Section>
     </main>
   );
 }
