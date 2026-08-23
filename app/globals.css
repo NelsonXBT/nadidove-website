@@ -286,7 +286,7 @@ h3 {
    ========================================================= */
 
 .site-header {
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -297,7 +297,7 @@ h3 {
 
   border-bottom: none;
 
-  background: transparent;
+  background: rgba(0, 0, 0, 0.55);
 
   box-shadow: none;
 }
@@ -1322,7 +1322,7 @@ h3 {
 
   .site-header {
   height: 68px;
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
