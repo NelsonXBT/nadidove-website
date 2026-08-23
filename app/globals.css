@@ -772,7 +772,7 @@ h3 {
 }
 
 .film-card:hover,
-.film-card:has(.film-card-action:focus-visible) {
+.film-card:has(.film-card-link:focus-visible) {
   background: var(--color-surface-hover);
   border-color: var(--color-border-strong);
   transform: translateY(-5px);
@@ -783,29 +783,22 @@ h3 {
 
 
 /* ---------------------------------------------------------
-   WHOLE-CARD CLICK TARGET
+   WHOLE-CARD LINK
 
-   A transparent button laid over the card keeps the markup
-   valid (no headings nested inside a <button>) while still
-   making the entire surface activatable.
+   The card is a single link to the film's own page, so the
+   whole surface is one target and the destination shows in
+   the status bar on hover.
    --------------------------------------------------------- */
 
-.film-card-action {
-  position: absolute;
-  inset: 0;
-
-  z-index: 4;
-
-  padding: 0;
-
-  background: transparent;
+.film-card-link {
+  display: block;
 
   border-radius: inherit;
 
-  cursor: pointer;
+  color: inherit;
 }
 
-.film-card-action:focus-visible {
+.film-card-link:focus-visible {
   outline: 1px solid var(--color-text);
   outline-offset: 3px;
 }
@@ -818,89 +811,84 @@ h3 {
 
   overflow: hidden;
 
-  background: var(--color-background-soft);
+  background: var(--tone-wash, var(--color-background-soft));
 
   border-bottom: 1px solid var(--color-border);
 }
 
-.film-card-placeholder {
-  position: absolute;
-  inset: 0;
+/* ---------------------------------------------------------
+   FILM TONES
 
-  overflow: hidden;
-}
+   Each film carries a `tone`, exposed here as two custom
+   properties: a wash that sits behind the poster frame while
+   it loads (so there is no flat grey flash) and a glow the
+   film page uses behind its player.
+   --------------------------------------------------------- */
 
-.film-card-placeholder::before {
-  content: "";
-
-  position: absolute;
-  inset: -10%;
-
-  transition: transform 800ms var(--ease-out);
-}
-
-.film-card:hover .film-card-placeholder::before {
-  transform: scale(1.06);
-}
-
-.film-tone-ember .film-card-placeholder::before {
-  background:
+.film-tone-ember {
+  --tone-wash:
     radial-gradient(
       circle at 30% 25%,
       rgba(164, 25, 42, 0.65),
       transparent 35%
     ),
     linear-gradient(145deg, #311016, #0c0a09 72%);
+  --tone-glow: rgba(164, 25, 42, 0.5);
 }
 
-.film-tone-gold .film-card-placeholder::before {
-  background:
+.film-tone-gold {
+  --tone-wash:
     radial-gradient(
       circle at 70% 25%,
       rgba(173, 107, 31, 0.48),
       transparent 36%
     ),
     linear-gradient(145deg, #30200e, #0c0a09 72%);
+  --tone-glow: rgba(173, 107, 31, 0.42);
 }
 
-.film-tone-teal .film-card-placeholder::before {
-  background:
+.film-tone-teal {
+  --tone-wash:
     radial-gradient(
       circle at 30% 30%,
       rgba(13, 91, 83, 0.6),
       transparent 36%
     ),
     linear-gradient(145deg, #092523, #090b0a 72%);
+  --tone-glow: rgba(13, 91, 83, 0.5);
 }
 
-.film-tone-blue .film-card-placeholder::before {
-  background:
+.film-tone-blue {
+  --tone-wash:
     radial-gradient(
       circle at 70% 30%,
       rgba(35, 71, 111, 0.55),
       transparent 36%
     ),
     linear-gradient(145deg, #101d30, #090a0b 72%);
+  --tone-glow: rgba(35, 71, 111, 0.48);
 }
 
-.film-tone-rose .film-card-placeholder::before {
-  background:
+.film-tone-rose {
+  --tone-wash:
     radial-gradient(
       circle at 35% 25%,
       rgba(118, 35, 59, 0.58),
       transparent 36%
     ),
     linear-gradient(145deg, #28121b, #0c0a09 72%);
+  --tone-glow: rgba(118, 35, 59, 0.48);
 }
 
-.film-tone-violet .film-card-placeholder::before {
-  background:
+.film-tone-violet {
+  --tone-wash:
     radial-gradient(
       circle at 65% 25%,
       rgba(77, 54, 116, 0.52),
       transparent 36%
     ),
     linear-gradient(145deg, #191429, #0b0a0c 72%);
+  --tone-glow: rgba(77, 54, 116, 0.45);
 }
 
 .film-card-image {
@@ -928,8 +916,10 @@ h3 {
   z-index: 3;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 14px;
 
   background:
     linear-gradient(
@@ -944,69 +934,53 @@ h3 {
 }
 
 .film-card:hover .film-card-overlay,
-.film-card:has(.film-card-action:focus-visible) .film-card-overlay {
+.film-card:has(.film-card-link:focus-visible) .film-card-overlay {
   opacity: 1;
 }
 
 .film-card-play {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
+  justify-content: center;
 
-  padding: 12px 18px;
+  width: 54px;
+  height: 54px;
 
-  border: 1px solid rgba(242, 238, 232, 0.3);
+  border: 1px solid rgba(242, 238, 232, 0.34);
   border-radius: 999px;
 
-  background: rgba(8, 8, 7, 0.55);
-
-  color: var(--color-text);
-
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  background: rgba(8, 8, 7, 0.5);
 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  transition: transform var(--transition-base);
 }
 
-/* Play triangle drawn with borders — no icon asset needed. */
+.film-card:hover .film-card-play {
+  transform: scale(1.06);
+}
+
+/* Play triangle drawn with borders — no icon asset needed. The nudge keeps
+   it optically centred inside the circle. */
 .film-card-play-icon {
   width: 0;
   height: 0;
 
-  border-top: 4.5px solid transparent;
-  border-bottom: 4.5px solid transparent;
-  border-left: 8px solid var(--color-text);
+  margin-left: 3px;
+
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid var(--color-text);
 }
 
+.film-card-watch {
+  color: var(--color-text);
 
-/* Marker for catalogue entries that have no video yet. */
-
-.film-card-status {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-
-  z-index: 3;
-
-  padding: 7px 11px;
-
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-
-  background: rgba(8, 8, 7, 0.6);
-
-  color: var(--color-text-muted);
-
-  font-size: 0.55rem;
+  font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 .film-card-content {
@@ -1186,16 +1160,21 @@ h3 {
    ========================================================= */
 
 @media (max-width: 900px) {
+  /* `.hero-content` and `.hero-media` are both absolutely positioned, so the
+     section has no in-flow child to give it height — it needs an explicit
+     one. `svh` is the stable viewport unit while mobile browser chrome
+     shows and hides. */
   .hero {
-    min-height: auto;
+    min-height: 100svh;
   }
 
-  .hero {
-    padding-top: 125px;
-    padding-bottom: 85px;
+  /* The desktop gap between the eyebrow and the title is a flat 380px. Below
+     900px that is scaled to the viewport instead, so the bottom-anchored
+     stack keeps the same arrangement without overflowing the top of a short
+     screen (small phones, and any phone in landscape). */
+  .hero .eyebrow {
+    margin-bottom: min(380px, 34svh);
   }
-
-
 
   .process {
     grid-template-columns: 1fr;
@@ -1755,129 +1734,271 @@ h3 {
 
 
 /* =========================================================
-   VIDEO LIGHTBOX
+   FILM PAGE
+
+   One film, one page: a large title, a player that waits for
+   a press, the synopsis beside it, and — when a film has more
+   than one video — a chip row to switch between them.
    ========================================================= */
 
-.lightbox {
-  position: fixed;
-  inset: 0;
+.film-page {
+  position: relative;
 
-  z-index: 300;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: clamp(16px, 4vw, 48px);
-
-  animation: lightbox-in 260ms var(--ease-out);
+  padding-top: 108px;
 }
 
-.lightbox-backdrop {
+/* Ambient wash in the film's own tone, sitting behind the stage. */
+.film-page::before {
+  content: "";
+
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 50%;
 
-  padding: 0;
+  width: min(1180px, 110%);
+  height: 460px;
 
-  background: rgba(4, 4, 4, 0.9);
+  transform: translateX(-50%);
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      var(--tone-glow, transparent),
+      transparent 68%
+    );
 
-  cursor: pointer;
+  opacity: 0.34;
+
+  pointer-events: none;
+
+  z-index: 0;
 }
 
-.lightbox-panel {
+.film-page > * {
   position: relative;
   z-index: 1;
-
-  width: 100%;
-  max-width: 1100px;
 }
 
-.lightbox-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-
-  margin-bottom: 16px;
-}
-
-/* `min-width: 0` lets a long film title wrap or ellipsise inside the flex
-   row instead of pushing the Close button past the panel edge. */
-.lightbox-titles {
-  min-width: 0;
-}
-
-.lightbox-title {
-  color: var(--color-text);
-
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.lightbox-meta {
-  margin-top: 5px;
+.film-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
 
   color: var(--color-text-subtle);
 
   font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+
+  transition: color var(--transition-fast);
 }
 
-.lightbox-close {
-  display: inline-flex;
+.film-back:hover {
+  color: var(--color-text);
+}
+
+.film-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+
+  margin: 26px 0 28px;
+}
+
+.film-title {
+  margin: 0;
+
+  color: var(--color-text);
+
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 6.5vw, 5.25rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.film-meta {
+  display: flex;
   align-items: center;
   gap: 10px;
 
   flex-shrink: 0;
 
-  padding: 11px 16px;
+  padding-bottom: 10px;
 
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-
-  background: transparent;
-
-  color: var(--color-text-muted);
+  color: var(--color-text-subtle);
 
   font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-
-  cursor: pointer;
-
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
 }
 
-.lightbox-close:hover {
+
+/* ---------------------------------------------------------
+   STAGE
+   --------------------------------------------------------- */
+
+.film-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+
+  overflow: hidden;
+
   background: var(--color-surface);
-  color: var(--color-text);
+
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
 }
 
-.lightbox-frame {
+.film-stage-main {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   PLAYER
+
+   Until the viewer presses play this is just an image and a
+   button — no YouTube script is loaded.
+   --------------------------------------------------------- */
+
+.film-player {
   position: relative;
 
   aspect-ratio: 16 / 9;
 
-  overflow: hidden;
-
   background: #000;
-
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
 }
 
-.lightbox-frame iframe {
+.film-player-poster {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  border: 0;
+
+  background: var(--tone-wash, #000);
+
+  cursor: pointer;
+}
+
+.film-player-poster:focus-visible {
+  outline: 1px solid var(--color-text);
+  outline-offset: -2px;
+}
+
+.film-player-image {
+  object-fit: cover;
+
+  transition: transform 900ms var(--ease-out);
+}
+
+.film-player-poster:hover .film-player-image {
+  transform: scale(1.02);
+}
+
+.film-player-scrim {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(6, 6, 6, 0.78),
+      rgba(6, 6, 6, 0.12) 55%,
+      rgba(6, 6, 6, 0.3)
+    );
+}
+
+.film-player-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 88px;
+  height: 88px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgba(242, 238, 232, 0.34);
+  border-radius: 999px;
+
+  background: rgba(8, 8, 7, 0.42);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition:
+    transform var(--transition-base),
+    background-color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.film-player-poster:hover .film-player-play {
+  background: rgba(155, 14, 31, 0.82);
+  border-color: rgba(242, 238, 232, 0.5);
+
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.film-player-play-icon {
+  width: 0;
+  height: 0;
+
+  margin-left: 5px;
+
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-left: 18px solid var(--color-text);
+}
+
+.film-player-cta {
+  position: absolute;
+  bottom: 22px;
+  left: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  text-align: left;
+
+  color: var(--color-text-subtle);
+
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.film-player-cta-title {
+  max-width: 34ch;
+
+  color: var(--color-text);
+
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.film-player-frame {
   position: absolute;
   inset: 0;
 
@@ -1887,37 +2008,216 @@ h3 {
   border: 0;
 }
 
-.lightbox-external {
+
+/* ---------------------------------------------------------
+   VIDEO CHIPS
+   --------------------------------------------------------- */
+
+.film-chips {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 16px 20px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.film-chips-label {
+  flex-shrink: 0;
+
+  color: var(--color-text-subtle);
+
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.film-chips-row {
+  display: flex;
+  gap: 8px;
+
+  min-width: 0;
+
+  overflow-x: auto;
+
+  /* Keeps the row swipeable on a phone without showing a scrollbar. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.film-chips-row::-webkit-scrollbar {
+  display: none;
+}
+
+.film-chip {
+  flex-shrink: 0;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: var(--color-text-muted);
+
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.film-chip:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.film-chip--active {
+  background: rgba(242, 238, 232, 0.08);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+
+/* ---------------------------------------------------------
+   SYNOPSIS PANEL
+   --------------------------------------------------------- */
+
+.film-stage-side {
+  display: flex;
+  flex-direction: column;
+
+  padding: 30px 28px;
+
+  background: var(--color-background-soft);
+
+  border-left: 1px solid var(--color-border);
+}
+
+.film-stage-eyebrow {
+  margin-bottom: 18px;
+
+  color: var(--color-text-subtle);
+
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.film-stage-synopsis {
+  color: var(--color-text-muted);
+
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.film-stage-external {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 26px;
 
   color: var(--color-text-subtle);
 
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 
   transition: color var(--transition-fast);
 }
 
-.lightbox-external:hover {
+.film-stage-external:hover {
   color: var(--color-text);
 }
 
-@keyframes lightbox-in {
-  from {
-    opacity: 0;
-    transform: scale(0.985);
-  }
 
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* ---------------------------------------------------------
+   MORE FROM NADIDOVE
+   --------------------------------------------------------- */
+
+.film-more {
+  margin-top: 20px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.film-more-list {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.film-more-item {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr) auto 28px;
+  align-items: center;
+  gap: 20px;
+
+  padding-block: 24px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  transition: background-color var(--transition-fast);
+}
+
+.film-more-item:hover {
+  background: rgba(242, 238, 232, 0.02);
+}
+
+.film-more-number {
+  color: var(--color-text-subtle);
+
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+
+.film-more-title {
+  color: var(--color-text);
+
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.film-more-format {
+  color: var(--color-text-subtle);
+
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.film-more-arrow {
+  color: var(--color-text-subtle);
+
+  text-align: right;
+
+  transition:
+    transform var(--transition-base),
+    color var(--transition-base);
+}
+
+.film-more-item:hover .film-more-arrow {
+  color: var(--color-text);
+  transform: translateX(4px);
 }
 
 
@@ -2479,16 +2779,131 @@ h3 {
   .not-found {
     min-height: 60svh;
   }
+}
 
-  .lightbox-bar {
-    align-items: center;
+
+/* =========================================================
+   FILM PAGE — TABLET & MOBILE
+
+   The stage collapses to a single column: player, then the
+   synopsis beneath it, then the chip row.
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .film-stage {
+    grid-template-columns: 1fr;
   }
 
-  .lightbox-title {
-    font-size: 0.92rem;
+  .film-stage-side {
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
   }
 
-  .lightbox-close span:last-child {
-    display: none;
+  .film-stage-external {
+    margin-top: 22px;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .film-page {
+    padding-top: 88px;
+  }
+
+  .film-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+
+    margin: 22px 0 22px;
+  }
+
+  .film-meta {
+    padding-bottom: 0;
+  }
+
+  .film-more-item {
+    grid-template-columns: 46px minmax(0, 1fr) 22px;
+    gap: 14px;
+  }
+
+  .film-more-format {
+    grid-column: 2;
+
+    margin-top: 4px;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .film-page {
+    padding-top: 78px;
+  }
+
+  .film-page::before {
+    height: 300px;
+  }
+
+  .film-title {
+    font-size: clamp(1.9rem, 10vw, 2.9rem);
+  }
+
+  .film-stage {
+    /* Full-bleed on a phone: the player reads as the screen, not a card. */
+    margin-inline: calc(var(--container-padding) * -1);
+
+    border-inline: 0;
+    border-radius: 0;
+  }
+
+  .film-player-play {
+    width: 62px;
+    height: 62px;
+  }
+
+  .film-player-play-icon {
+    margin-left: 4px;
+
+    border-top-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 13px;
+  }
+
+  .film-player-cta {
+    bottom: 14px;
+    left: 16px;
+  }
+
+  .film-player-cta-title {
+    font-size: 0.86rem;
+  }
+
+  .film-chips {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 14px 16px;
+  }
+
+  /* Let the swipeable row reach the screen edges. */
+  .film-chips-row {
+    width: 100%;
+
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .film-stage-side {
+    padding: 24px 20px;
+  }
+
+  .film-stage-synopsis {
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
+  .film-more-item {
+    padding-block: 20px;
   }
 }

@@ -1,28 +1,26 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
-import {
-  categoryNames,
-  youtubeThumbnail,
-  type Film,
-} from "@/lib/films";
+import { primaryVideo, youtubeThumbnail, type Film } from "@/lib/films";
 
 interface FilmCardProps {
   film: Film;
-  /** Called when a film with a video is activated. */
-  onPlay?: (film: Film) => void;
-  /** Applied to the first card in a viewport-filling grid. */
+  /** Applied to the first cards in a viewport-filling grid. */
   priority?: boolean;
 }
 
 const IMAGE_SIZES =
   "(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw";
 
+/**
+ * A card opens the film's own page rather than a dialog, so a film can be
+ * linked to, shared and found by search. The whole card is one link.
+ */
 export default function FilmCard({
   film,
-  onPlay,
   priority = false,
 }: FilmCardProps) {
   // YouTube only generates `maxresdefault` for videos above 720p, so fall
@@ -31,20 +29,14 @@ export default function FilmCard({
     "max",
   );
 
-  const playable = Boolean(film.youtubeId) && Boolean(onPlay);
-
-  const poster =
-    film.poster ??
-    (film.youtubeId
-      ? youtubeThumbnail(film.youtubeId, thumbnailQuality)
-      : null);
+  const video = primaryVideo(film);
 
   return (
     <article className={`film-card film-tone-${film.tone}`}>
-      <div className="film-card-media">
-        {poster ? (
+      <Link href={`/our-work/${film.slug}`} className="film-card-link">
+        <div className="film-card-media">
           <Image
-            src={poster}
+            src={youtubeThumbnail(video.youtubeId, thumbnailQuality)}
             alt={`Still from ${film.title}`}
             fill
             sizes={IMAGE_SIZES}
@@ -52,44 +44,27 @@ export default function FilmCard({
             className="film-card-image"
             onError={() => setThumbnailQuality("hq")}
           />
-        ) : (
-          <div className="film-card-placeholder" aria-hidden="true" />
-        )}
 
-        {playable ? (
           <div className="film-card-overlay">
             <span className="film-card-play">
               <span className="film-card-play-icon" aria-hidden="true" />
-              Watch Film
             </span>
-          </div>
-        ) : (
-          <span className="film-card-status">In Production</span>
-        )}
-      </div>
 
-      <div className="film-card-content">
-        <div className="film-card-meta">
-          <span>{categoryNames[film.category]}</span>
-          <span>{film.year}</span>
+            <span className="film-card-watch">Watch Film</span>
+          </div>
         </div>
 
-        <h3 className="film-card-title">{film.title}</h3>
+        <div className="film-card-content">
+          <div className="film-card-meta">
+            <span>{film.format}</span>
+            <span>{film.year}</span>
+          </div>
 
-        <p className="film-card-description">{film.logline}</p>
-      </div>
+          <h3 className="film-card-title">{film.title}</h3>
 
-      {playable && (
-        <button
-          type="button"
-          className="film-card-action"
-          onClick={() => onPlay?.(film)}
-        >
-          <span className="sr-only">
-            Play {film.title} — {categoryNames[film.category]}, {film.year}
-          </span>
-        </button>
-      )}
+          <p className="film-card-description">{film.logline}</p>
+        </div>
+      </Link>
     </article>
   );
 }

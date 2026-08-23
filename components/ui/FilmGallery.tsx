@@ -3,11 +3,9 @@
 import { useMemo, useState } from "react";
 
 import FilmCard from "@/components/ui/FilmCard";
-import VideoLightbox from "@/components/ui/VideoLightbox";
 import {
   availableCategories,
   categoryLabels,
-  categoryNames,
   type Film,
   type FilmCategory,
 } from "@/lib/films";
@@ -23,7 +21,6 @@ export default function FilmGallery({
   showFilters = false,
 }: FilmGalleryProps) {
   const [category, setCategory] = useState<FilmCategory | "all">("all");
-  const [activeFilm, setActiveFilm] = useState<Film | null>(null);
 
   const categories = useMemo(
     () => availableCategories(films),
@@ -64,12 +61,7 @@ export default function FilmGallery({
 
       <div className="film-grid">
         {visibleFilms.map((film, index) => (
-          <FilmCard
-            key={film.slug}
-            film={film}
-            onPlay={setActiveFilm}
-            priority={index < 3}
-          />
+          <FilmCard key={film.slug} film={film} priority={index < 3} />
         ))}
       </div>
 
@@ -77,15 +69,6 @@ export default function FilmGallery({
         <p className="work-empty">
           Nothing here yet — new work lands every month.
         </p>
-      )}
-
-      {activeFilm?.youtubeId && (
-        <VideoLightbox
-          youtubeId={activeFilm.youtubeId}
-          title={activeFilm.title}
-          meta={`${categoryNames[activeFilm.category]} · ${activeFilm.year}`}
-          onClose={() => setActiveFilm(null)}
-        />
       )}
     </>
   );
