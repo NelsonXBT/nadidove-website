@@ -2579,259 +2579,208 @@ h3 {
 
 /* =========================================================
    CONTACT PAGE
+
+   One section, two columns: the reasons to get in touch on
+   the left, the page's single action — the address itself —
+   on the right, with nothing competing with it. There is no
+   form, so the address has to carry the whole page.
    ========================================================= */
 
-.contact-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+.contact-page {
+  /* The only section on the page, so it reserves the fixed header itself. */
+  padding-top: calc(var(--header-height) + 46px);
+}
 
-  margin-top: 36px;
+.contact-page-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
 
-  padding-bottom: 6px;
+  /* Named areas rather than source order, so the address can move between the
+     opening and the reasons on a narrow screen without moving in the DOM. */
+  grid-template-areas:
+    "opening direct"
+    "reasons direct";
+
+  column-gap: 80px;
+  row-gap: 64px;
+
+  /* Holds the address level with the eyebrow instead of centring it against
+     the full height of the left column. */
+  align-items: start;
+}
+
+.contact-opening {
+  grid-area: opening;
+}
+
+.contact-direct {
+  grid-area: direct;
+}
+
+.contact-reasons {
+  grid-area: reasons;
+}
+
+
+/* ---------------------------------------------------------
+   OPENING
+   --------------------------------------------------------- */
+
+/* `.heading-xl` is scoped to `.page-intro`, which this page does not use, so
+   the display scale is restated here to stay in step with the other titles. */
+.contact-title {
+  margin-top: 24px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-sans);
+  font-size: clamp(3rem, 6.5vw, 6rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.contact-lead {
+  max-width: 560px;
+
+  margin-top: 28px;
+
+  color: var(--color-text-muted);
+}
+
+
+/* ---------------------------------------------------------
+   REASONS
+
+   Editorial rows, not cards: a hairline between each, and no
+   surface of their own.
+   --------------------------------------------------------- */
+
+.contact-reasons {
+  margin: 0;
+  padding: 0;
+}
+
+.contact-reason {
+  padding-block: 28px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.contact-reason:last-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.contact-reason-title {
+  color: var(--color-text);
+
+  font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+/* `dd` carries a browser indent that would break the column edge. */
+.contact-reason-text {
+  max-width: 620px;
+
+  margin: 10px 0 0;
+
+  color: var(--color-text-muted);
+
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+
+/* ---------------------------------------------------------
+   THE ADDRESS
+
+   The one interactive element on the page. It takes the full
+   width of its column so the target is generous on a phone,
+   and its rule doubles as the underline — one line serving
+   two jobs rather than a border plus a decoration.
+   --------------------------------------------------------- */
+
+.contact-direct-label {
+  color: var(--color-text-subtle);
+
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.contact-direct-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+
+  /* The address alone is only about 40px tall, which is under a comfortable
+     thumb target, so the row is floored rather than left to the type size. */
+  min-height: 48px;
+
+  margin-top: 20px;
+  padding-top: 6px;
+  padding-bottom: 18px;
 
   border-bottom: 1px solid var(--color-border-strong);
 
   color: var(--color-text);
 
-  font-size: clamp(1.1rem, 2.6vw, 1.75rem);
+  transition: border-color var(--transition-base);
+}
+
+.contact-direct-address {
+  font-size: clamp(1.3rem, 2.2vw, 1.85rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 
-  transition:
-    border-color var(--transition-fast),
-    color var(--transition-fast);
+  /* An address broken across two lines is unreadable, so the type scale is
+     sized to fit the narrowest column instead of being allowed to wrap. */
+  white-space: nowrap;
 }
 
-.contact-email:hover {
-  border-color: var(--color-text);
-  color: var(--color-text);
-}
-
-.contact-routes-section {
-  border-top: 1px solid var(--color-border);
-
-  background: var(--color-background-soft);
-}
-
-.contact-routes-note {
-  max-width: 620px;
-
-  margin-bottom: 36px;
-
-  color: var(--color-text-muted);
-
-  font-size: 0.88rem;
-  line-height: 1.7;
-}
-
-.contact-routes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.contact-route {
-  display: flex;
-  flex-direction: column;
-
-  padding: 26px 24px 24px;
-
-  background: var(--color-surface);
-
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-
-  transition:
-    background-color var(--transition-base),
-    border-color var(--transition-base),
-    transform var(--transition-base);
-}
-
-.contact-route:hover {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
-
-  transform: translateY(-4px);
-}
-
-.contact-route-title {
-  margin: 0 0 10px;
+.contact-direct-arrow {
+  flex-shrink: 0;
 
   font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+
+  transition: transform var(--transition-base);
 }
 
-.contact-route-description {
-  color: var(--color-text-muted);
-
-  font-size: 0.82rem;
-  line-height: 1.65;
+.contact-direct-link:hover {
+  border-bottom-color: var(--color-text);
 }
 
-.contact-route-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-
-  margin-top: 24px;
-
-  color: var(--color-text-subtle);
-
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-
-  transition: color var(--transition-fast);
+.contact-direct-link:hover .contact-direct-arrow {
+  transform: translateX(5px);
 }
 
-.contact-route:hover .contact-route-action {
-  color: var(--color-text);
+.contact-direct-link:focus-visible {
+  outline: 1px solid var(--color-text);
+  outline-offset: 6px;
 }
 
-
-/* ---------------------------------------------------------
-   CONTACT — BRIEFING
-   --------------------------------------------------------- */
-
-.contact-brief-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: 64px;
-  align-items: start;
-}
-
-.contact-brief-main h2 {
-  max-width: 560px;
-
-  margin-top: 18px;
-
-  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
-  line-height: 1.05;
-}
-
-.contact-brief-lead {
-  max-width: 560px;
-
-  margin-top: 18px;
+.contact-direct-note {
+  margin-top: 22px;
 
   color: var(--color-text-muted);
 
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   line-height: 1.75;
 }
 
-.brief-list {
-  margin: 44px 0 0;
-  padding: 0;
-
-  list-style: none;
-
-  border-top: 1px solid var(--color-border);
-}
-
-.brief-item {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: 20px;
-
-  padding-block: 24px;
-
-  border-bottom: 1px solid var(--color-border);
-}
-
-.brief-number {
-  color: var(--color-text-subtle);
-
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-
-  line-height: 1.6;
-}
-
-.brief-title {
-  margin: 0 0 7px;
-
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.brief-description {
-  max-width: 520px;
-
-  color: var(--color-text-muted);
-
-  font-size: 0.84rem;
-  line-height: 1.7;
-}
-
-
-/* ---------------------------------------------------------
-   CONTACT — ASIDE
-   --------------------------------------------------------- */
-
-.contact-aside {
-  position: sticky;
-  top: 110px;
-
-  padding: 28px 26px;
-
-  background: var(--color-surface);
-
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-}
-
-.contact-aside-block + .contact-aside-block {
-  margin-top: 26px;
-  padding-top: 26px;
-
-  border-top: 1px solid var(--color-border);
-}
-
-.contact-aside-label {
-  margin-bottom: 10px;
+.contact-direct-reply {
+  margin-top: 16px;
 
   color: var(--color-text-subtle);
-
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.contact-aside-value {
-  color: var(--color-text-muted);
-
-  font-size: 0.84rem;
-  line-height: 1.7;
-}
-
-.contact-aside-link {
-  display: block;
-
-  color: var(--color-text);
 
   font-size: 0.86rem;
-  line-height: 1.7;
-
-  transition: color var(--transition-fast);
-}
-
-.contact-aside-link + .contact-aside-link {
-  margin-top: 4px;
-
-  color: var(--color-text-muted);
-}
-
-.contact-aside-link:hover {
-  color: var(--color-text);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  line-height: 1.75;
 }
 
 
@@ -2862,18 +2811,16 @@ h3 {
     gap: 32px;
   }
 
-  .contact-brief-inner {
-    grid-template-columns: 1fr;
-    gap: 48px;
+  /* The address column narrows here; the `vw` term in its own type scale is
+     what keeps the address itself inside it. */
+  .contact-page-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+    column-gap: 48px;
   }
 
   .founder {
     grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
     gap: 40px;
-  }
-
-  .contact-aside {
-    position: static;
   }
 }
 
@@ -2919,8 +2866,23 @@ h3 {
     grid-column: 2;
   }
 
-  .contact-routes {
+  /* One column, with the address lifted above the reasons so it is the first
+     thing after the opening rather than something to scroll past three
+     descriptions to reach. */
+  .contact-page-inner {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "opening"
+      "direct"
+      "reasons";
+
+    row-gap: 44px;
+  }
+
+  /* Holds the supporting copy to a readable measure once the column is the
+     full width of the page. */
+  .contact-direct {
+    max-width: 520px;
   }
 
   /* Stacks below the tablet breakpoint. The portrait is capped rather than
@@ -2986,18 +2948,38 @@ h3 {
     letter-spacing: 0.12em;
   }
 
-  .contact-email {
-    margin-top: 28px;
-    gap: 9px;
+  .contact-page {
+    padding-top: calc(var(--header-height) + 24px);
   }
 
-  .brief-item {
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .contact-page-inner {
+    row-gap: 34px;
   }
 
-  .brief-number {
-    line-height: 1;
+  .contact-title {
+    margin-top: 18px;
+    font-size: clamp(2.6rem, 13vw, 3.6rem);
+  }
+
+  .contact-lead {
+    margin-top: 20px;
+
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .contact-reason {
+    padding-block: 22px;
+  }
+
+  .contact-reason-text {
+    margin-top: 8px;
+    font-size: 0.86rem;
+  }
+
+  .contact-direct-note,
+  .contact-direct-reply {
+    font-size: 0.84rem;
   }
 
   .capability {

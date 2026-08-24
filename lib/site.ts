@@ -29,33 +29,31 @@ export const navigation = [
 ] as const;
 
 /**
- * Every route points at the same inbox but pre-fills a subject line, so mail
- * can be triaged without maintaining separate aliases.
+ * The reasons people get in touch, listed on the contact page so a visitor can
+ * recognise their own situation before writing. These are explanatory only —
+ * the page deliberately offers one action, the address itself, so none of them
+ * is a link and none pre-fills a subject.
  */
-export interface ContactRoute {
+export interface ContactReason {
   label: string;
   description: string;
-  subject: string;
 }
 
-export const contactRoutes: ContactRoute[] = [
+export const contactReasons: ContactReason[] = [
   {
-    label: "Projects & Brand Films",
+    label: "Commercials & Brand Content",
     description:
-      "Commissioned films, brand campaigns, sponsored shorts and series development.",
-    subject: "Project enquiry — [company or project name]",
+      "Need a commercial for your product or brand, a cinematic brand film, or creative content for a campaign? Tell us what you’re looking to create and what you have in mind.",
   },
   {
-    label: "Collaboration",
+    label: "Collaborations & Partnerships",
     description:
-      "Writers, composers, editors and studios who want to build something with us.",
-    subject: "Collaboration — [your discipline]",
+      "Have a story, film, or creative project you’d like to develop with us? Tell us about the idea.",
   },
   {
-    label: "Press & Screenings",
+    label: "Sponsored Promotions & Brand Partnerships",
     description:
-      "Interviews, festival programming, screening requests and press material.",
-    subject: "Press — [publication or festival]",
+      "Looking to have your product or service featured by Nadidove Films, or interested in a long-term promotional partnership? Tell us what you have in mind.",
   },
 ];
 
