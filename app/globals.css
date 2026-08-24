@@ -2317,6 +2317,18 @@ h3 {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* The About page carries no display headline — the statement is its opening —
+   so the intro is just the kicker and needs none of the usual bottom space.
+   Both classes are on the one element, which is what lets this outrank the
+   `.page-intro` padding set inside the responsive blocks further down. */
+.page-intro.about-intro {
+  padding-bottom: 0;
+}
+
+.about-intro .eyebrow {
+  margin-bottom: 0;
+}
+
 .statement-inner {
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
@@ -2361,6 +2373,54 @@ h3 {
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.03em;
+}
+
+
+/* ---------------------------------------------------------
+   TENETS
+
+   What the studio holds to, sitting inside the statement
+   body so it reads as the close of the description rather
+   than a section of its own. Rows of term and description —
+   deliberately not the numbered columns the home page uses.
+   --------------------------------------------------------- */
+
+.tenets {
+  margin: 46px 0 0;
+  padding: 0;
+}
+
+.tenet {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 30px;
+
+  padding-block: 24px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.tenet:last-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tenet-title {
+  color: var(--color-text);
+
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* `dd` carries a browser indent that would break the column edge. */
+.tenet-text {
+  margin: 0;
+
+  color: var(--color-text-muted);
+
+  font-size: 0.9rem;
+  line-height: 1.75;
 }
 
 
@@ -2938,6 +2998,23 @@ h3 {
 
   .capability {
     padding-block: 22px;
+  }
+
+  /* The term sits above its description on a phone — a 180px first column
+     leaves too little room for either half. */
+  .tenet {
+    grid-template-columns: 1fr;
+    gap: 7px;
+
+    padding-block: 20px;
+  }
+
+  .tenets {
+    margin-top: 36px;
+  }
+
+  .tenet-text {
+    font-size: 0.86rem;
   }
 
   .team-label {

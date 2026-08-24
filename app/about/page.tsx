@@ -14,24 +14,21 @@ export const metadata: Metadata = {
 };
 
 /**
- * What the studio holds to, shown as three columns under the statement.
- * The numbers are the only ornament — each pillar's name carries the point.
+ * What the studio holds to. These read as term-and-description rows directly
+ * under the studio description rather than as a section of their own.
  */
-const pillars = [
+const tenets = [
   {
-    number: "01",
     title: "Beyond AI",
     description:
       "AI is part of our toolkit, but it doesn’t define our creative identity. Our work goes beyond the technology.",
   },
   {
-    number: "02",
     title: "Director-led",
     description:
       "A film is more than what AI can generate. It’s what a human director chooses to make of it. Every frame begins with intention, direction, and a clear creative vision.",
   },
   {
-    number: "03",
     title: "Speed, Without Compromise",
     description:
       "We move faster through production while maintaining the precision, detail, and quality our films demand.",
@@ -41,15 +38,11 @@ const pillars = [
 export default function AboutPage() {
   return (
     <main id="main">
-      <section className="page-intro">
+      <section className="page-intro about-intro">
         <Container>
-          <Eyebrow>About</Eyebrow>
-
-          <h1 className="heading-xl">
-            A film studio built
-            <br />
-            for what comes next.
-          </h1>
+          {/* The statement below is this page's headline, so the kicker is the
+              heading — short, and matching the page title. */}
+          <h1 className="eyebrow">About</h1>
         </Container>
       </section>
 
@@ -83,24 +76,16 @@ export default function AboutPage() {
               the freedom to pursue the image as it was imagined, not simply as
               production allows.
             </p>
-          </div>
-        </Container>
-      </Section>
 
-      <Section className="positioning">
-        <Container>
-          <Eyebrow className="approach-label">Our Approach</Eyebrow>
+            <dl className="tenets">
+              {tenets.map((tenet) => (
+                <div className="tenet" key={tenet.title}>
+                  <dt className="tenet-title">{tenet.title}</dt>
 
-          <div className="process">
-            {pillars.map((pillar) => (
-              <article className="process-step" key={pillar.number}>
-                <span className="step-num">{pillar.number}</span>
-
-                <h3>{pillar.title}</h3>
-
-                <p>{pillar.description}</p>
-              </article>
-            ))}
+                  <dd className="tenet-text">{tenet.description}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </Container>
       </Section>
