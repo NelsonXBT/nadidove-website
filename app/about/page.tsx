@@ -38,16 +38,13 @@ const tenets = [
 export default function AboutPage() {
   return (
     <main id="main">
-      <section className="page-intro about-intro">
-        <Container>
-          {/* The statement below is this page's headline, so the kicker is the
-              heading — short, and matching the page title. */}
-          <h1 className="eyebrow">About</h1>
-        </Container>
-      </section>
-
       <Section className="statement">
         <Container className="statement-inner">
+          {/* The page opens straight on the statement, with no display
+              headline. This keeps a heading in the document for screen
+              readers and search without putting a title on screen. */}
+          <h1 className="sr-only">About Nadidove</h1>
+
           <p className="statement-label">The Studio</p>
 
           <div className="statement-body">
