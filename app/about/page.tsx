@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/ui/Container";
@@ -8,58 +9,32 @@ import Section from "@/components/ui/Section";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Nadidove is an AI-native film studio. We write, direct and generate original stories end to end — then release them straight to the audience.",
+    "Nadidove is a director-led film studio exploring the possibilities of cinema through artificial intelligence.",
   alternates: { canonical: "/about" },
 };
 
-const processSteps = [
+/**
+ * What the studio holds to, shown as three columns under the statement.
+ * The numbers are the only ornament — each pillar's name carries the point.
+ */
+const pillars = [
   {
     number: "01",
-    label: "Write",
-    title: "Write",
+    title: "Beyond AI",
     description:
-      "Every film starts on the page — a real story, real characters and a reason to keep watching. Nothing gets generated until the script earns it.",
+      "AI is part of our toolkit, but it doesn’t define our creative identity. Our work goes beyond the technology.",
   },
   {
     number: "02",
-    label: "Generate",
-    title: "Generate",
+    title: "Director-led",
     description:
-      "We direct AI models shot by shot to build the world, the cast and the performances, holding continuity and tone across every frame.",
+      "A film is more than what AI can generate. It’s what a human director chooses to make of it. Every frame begins with intention, direction, and a clear creative vision.",
   },
   {
     number: "03",
-    label: "Release",
-    title: "Release",
+    title: "Speed, Without Compromise",
     description:
-      "Each film is edited, graded and scored as a complete production, then released directly to our audience.",
-  },
-];
-
-const capabilities = [
-  {
-    number: "01",
-    title: "Original Short Films",
-    description:
-      "Our own IP, written and produced in-house and released on our channel.",
-  },
-  {
-    number: "02",
-    title: "Animation",
-    description:
-      "Stylised, character-led work for stories live action cannot reach.",
-  },
-  {
-    number: "03",
-    title: "Brand & Sponsored Films",
-    description:
-      "Cinematic films for brands who want story before spec sheet.",
-  },
-  {
-    number: "04",
-    title: "Series Development",
-    description:
-      "Worlds built to run past one episode — pitch, pilot and beyond.",
+      "We move faster through production while maintaining the precision, detail, and quality our films demand.",
   },
 ];
 
@@ -75,11 +50,6 @@ export default function AboutPage() {
             <br />
             for what comes next.
           </h1>
-
-          <p className="body-lg">
-            Nadidove is a creative film studio creating original stories
-            through imagination, technology and film.
-          </p>
         </Container>
       </section>
 
@@ -89,29 +59,29 @@ export default function AboutPage() {
 
           <div className="statement-body">
             <p className="statement-lead">
-              We are directors first. AI is the camera, the crew and the
-              backlot — not the author.
+              For generations, filmmakers have worked within the realities of
+              locations, heavy equipment, travel, time and the many logistical
+              constraints that can stand between an idea and the screen. The
+              emergence of artificial intelligence is changing what is
+              possible.
             </p>
 
             <p>
-              Nadidove writes, directs and generates original films start to
-              finish. There is no department to book, no gear list and no
-              window of good light to wait for. There is a script, a
-              direction, and a film at the end of it.
+              Nadidove was born from a desire to make cinematic storytelling
+              less dependent on the physical limitations of traditional
+              production.
             </p>
 
             <p>
-              That changes what a studio our size can attempt. A world that
-              would once have needed a production budget and a six-month
-              schedule now needs a clear idea and the discipline to hold it
-              across every frame. We build the world, the characters and the
-              performances through generative tools, then edit and score each
-              film as a complete production.
+              We are a director-led film studio exploring the possibilities of
+              cinema through artificial intelligence — expanding the canvas on
+              which stories can be imagined, shaped and brought to life.
             </p>
 
             <p>
-              We are based in Africa and making work for anyone, anywhere,
-              who still sits down for a good story.
+              Our vision is simple: to create ambitious, original films with
+              the freedom to pursue the image as it was imagined, not simply as
+              production allows.
             </p>
           </div>
         </Container>
@@ -119,54 +89,63 @@ export default function AboutPage() {
 
       <Section className="positioning">
         <Container>
-          <div className="positioning-head">
-            <Eyebrow>How We Work</Eyebrow>
-
-            <h2>From story to screen, under one roof.</h2>
-
-            <p>
-              Three stages, one team. Every Nadidove film moves through the
-              same pipeline — and every creative decision inside it is ours.
-            </p>
-          </div>
+          <Eyebrow className="approach-label">Our Approach</Eyebrow>
 
           <div className="process">
-            {processSteps.map((step) => (
-              <article className="process-step" key={step.number}>
-                <span className="step-num">
-                  {step.number} — {step.label.toUpperCase()}
-                </span>
+            {pillars.map((pillar) => (
+              <article className="process-step" key={pillar.number}>
+                <span className="step-num">{pillar.number}</span>
 
-                <h3>{step.title}</h3>
+                <h3>{pillar.title}</h3>
 
-                <p>{step.description}</p>
+                <p>{pillar.description}</p>
               </article>
             ))}
           </div>
         </Container>
       </Section>
 
-      <Section className="capabilities">
+      <Section className="team">
         <Container>
-          <div className="section-head">
-            <h2>What We Make</h2>
-          </div>
+          <Eyebrow className="team-label">Team</Eyebrow>
 
-          <ul className="capability-list">
-            {capabilities.map((capability) => (
-              <li className="capability" key={capability.number}>
-                <span className="capability-number">
-                  {capability.number}
-                </span>
+          <article className="founder">
+            <div className="founder-portrait">
+              <Image
+                src="/media/team/nelson-edeh.jpg"
+                alt="Nelson Edeh, Creative Director and founder of Nadidove"
+                width={1200}
+                height={1200}
+                sizes="(max-width: 900px) 380px, 420px"
+                className="founder-image"
+              />
+            </div>
 
-                <h3 className="capability-title">{capability.title}</h3>
+            <div className="founder-body">
+              <p className="founder-role">Creative Director / Filmmaker</p>
 
-                <p className="capability-description">
-                  {capability.description}
+              <h2 className="founder-name">Nelson Edeh</h2>
+
+              <div className="founder-bio">
+                <p>
+                  Nelson Edeh is a video producer and AI filmmaker with five
+                  years of experience creating cinematic entertainment and
+                  digital media. His work combines creative direction, visual
+                  storytelling and emerging technology, with a track record of
+                  creating entertainment content that has gained significant
+                  traction across social media and connected with wide
+                  audiences.
                 </p>
-              </li>
-            ))}
-          </ul>
+
+                <p>
+                  He is the Creative Director and founder of Nadidove, a film
+                  studio born from his work in cinematic storytelling and his
+                  exploration of the possibilities of artificial intelligence
+                  in filmmaking.
+                </p>
+              </div>
+            </div>
+          </article>
         </Container>
       </Section>
 
