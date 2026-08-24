@@ -31,6 +31,12 @@
   --container-width: 1240px;
   --container-padding: 48px;
 
+  /* The header is fixed, so it takes no space in the flow. Every page that
+     starts with content near the top has to reserve this much itself, and
+     reading it from one variable is what keeps those offsets in step with
+     the header when it shrinks on smaller screens. */
+  --header-height: 78px;
+
   --section-space: clamp(80px, 8vw, 120px);
 
   /* -------------------------------------------------------
@@ -79,12 +85,26 @@
 html {
   scroll-behavior: smooth;
   background: var(--color-background);
+
+  /* Anything jumped to by an anchor — the skip link's `#main`, a shared
+     deep link — stops below the fixed header instead of underneath it. */
+  scroll-padding-top: var(--header-height);
+
+  /* iOS inflates text in landscape unless this is pinned, which throws the
+     whole type scale out on a rotated phone. */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   background: var(--color-background);
   color: var(--color-text);
+
+  /* A phone has no comfortable way to scroll a page sideways, so a stray
+     wide element must never be able to introduce the axis. `clip` blocks it
+     without turning `body` into a scroll container the way `hidden` does —
+     which would break `position: sticky` and the smooth scrolling above. */
+  overflow-x: clip;
 
   font-family: var(--font-sans);
   font-size: 16px;
@@ -341,7 +361,7 @@ h3 {
   left: 0;
   width: 100%;
 
-  height: 78px;
+  height: var(--header-height);
 
   z-index: 100;
 
@@ -450,7 +470,12 @@ h3 {
 
 .hero {
   position: relative;
-  min-height: 100vh;
+
+  /* `svh` is the viewport at its *smallest* — the state where a mobile
+     browser is showing its chrome. Sizing to that means the hero is never
+     taller than what the viewer can actually see, so the bottom-anchored
+     title can't sit under the address bar. On desktop it equals `vh`. */
+  min-height: 100svh;
 
   display: flex;
   align-items: center;
@@ -573,6 +598,10 @@ h3 {
 }
 
 
+/* The stack is anchored to the bottom of the hero, so this margin is what
+   holds the eyebrow up near the top of the frame. It is a fixed distance on
+   a desktop screen, where there is always room for it; below 900px it
+   becomes `auto` so it can absorb whatever space is left instead. */
 .hero .eyebrow {
   margin-bottom: 380px;
 
@@ -983,6 +1012,40 @@ h3 {
   text-transform: uppercase;
 }
 
+/* A touch screen never fires hover, so on a phone the badge above would stay
+   at `opacity: 0` and the card would read as a plain still with nothing to
+   say it opens a film. It rests visible there instead, over a lighter scrim
+   than the hover state uses so it sits on the poster without covering it. */
+@media (hover: none) {
+  .film-card-overlay {
+    opacity: 1;
+
+    background:
+      linear-gradient(
+        to top,
+        rgba(8, 8, 7, 0.46),
+        transparent 62%
+      );
+  }
+
+  .film-card-play {
+    width: 46px;
+    height: 46px;
+  }
+
+  .film-card-play-icon {
+    margin-left: 2px;
+
+    border-top-width: 5px;
+    border-bottom-width: 5px;
+    border-left-width: 9px;
+  }
+
+  .film-card-watch {
+    font-size: 0.55rem;
+  }
+}
+
 .film-card-content {
   padding: 20px 22px 22px;
 }
@@ -1082,7 +1145,10 @@ h3 {
 
 .site-footer {
   padding-top: 64px;
-  padding-bottom: 28px;
+
+  /* `env()` resolves to 0px on any device without a home indicator, so this
+     is the plain 28px everywhere else. */
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
 
   border-top: 1px solid var(--color-border);
 
@@ -1160,20 +1226,27 @@ h3 {
    ========================================================= */
 
 @media (max-width: 900px) {
-  /* `.hero-content` and `.hero-media` are both absolutely positioned, so the
-     section has no in-flow child to give it height — it needs an explicit
-     one. `svh` is the stable viewport unit while mobile browser chrome
-     shows and hides. */
-  .hero {
-    min-height: 100svh;
+  /* The eyebrow sits at the top of the frame and the title and button sit at
+     the bottom — the same arrangement as desktop, but reached with an `auto`
+     margin rather than a fixed 380px one.
+
+     `justify-content: flex-end` bottom-anchors the stack, and an auto margin
+     absorbs the free space above it before that alignment is applied. So the
+     gap is whatever the screen has spare and collapses to nothing when it has
+     none. A fixed spacer taller than the viewport pushes the eyebrow off the
+     top edge, where `overflow: hidden` on the hero silently clips it — which
+     is what happened on every phone shorter than about 700px, and on any
+     phone at all in landscape. */
+  .hero .eyebrow {
+    margin-bottom: auto;
   }
 
-  /* The desktop gap between the eyebrow and the title is a flat 380px. Below
-     900px that is scaled to the viewport instead, so the bottom-anchored
-     stack keeps the same arrangement without overflowing the top of a short
-     screen (small phones, and any phone in landscape). */
-  .hero .eyebrow {
-    margin-bottom: min(380px, 34svh);
+  /* Clears the fixed header. Once the margin above pins the eyebrow to the
+     top of the content box, the box's own top padding is the only thing
+     keeping it out from under the header. */
+  .hero-content {
+    padding-top: calc(var(--header-height) + 22px);
+    padding-bottom: 64px;
   }
 
   .process {
@@ -1201,39 +1274,9 @@ h3 {
 @media (max-width: 640px) {
   :root {
     --container-padding: 20px;
-    --section-space: 92px;
-  }
+    --section-space: 76px;
 
-  .site-header {
-    height: 70px;
-  }
-
-  .site-nav {
-    gap: 18px;
-  }
-
-  .site-nav a {
-    font-size: 0.56rem;
-    letter-spacing: 0.09em;
-  }
-
-  
-
-  .hero {
-  min-height: calc(100svh - 70px);
-
-  padding-top: 80px;
-  padding-bottom: 70px;
-}
-
-  .hero-content {
-    align-items: flex-start;
-    padding-block: 0;
-    text-align: left;
-  }
-
-  .hero .eyebrow {
-    margin-bottom: 400px;
+    --header-height: 68px;
   }
 
   .hero-title {
@@ -1241,14 +1284,14 @@ h3 {
     line-height: 1.1;
   }
 
-  .hero-description {
-    margin-top: 24px;
-
-    font-size: 0.88rem;
-    line-height: 1.7;
-  }
-
+  /* Full width so the button is centred under the centred title, rather than
+     sitting wherever the inline-block lands. */
   .hero-action {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+
     margin-top: 22px;
   }
 
@@ -1261,88 +1304,69 @@ h3 {
     font-size: clamp(2.35rem, 12vw, 4rem);
   }
 
-  .positioning-head > p {
-    margin-top: 24px;
+  .positioning {
+    padding-block: 44px;
+  }
 
-    font-size: 0.92rem;
+  .positioning-head {
+    margin-bottom: 28px;
+  }
+
+  .positioning-head .eyebrow {
+    margin-bottom: 14px;
+  }
+
+  .positioning-head h2 {
+    font-size: clamp(2rem, 8vw, 2.6rem);
+    line-height: 1.02;
+  }
+
+  .positioning-head > p {
+    margin-top: 14px;
+
+    font-size: 0.84rem;
+    line-height: 1.65;
   }
 
   .process {
-  gap: 32px;
-  margin-top: 38px;
-}
-
-  .process-step {
-    padding-top: 20px;
+    gap: 32px;
+    margin-top: 38px;
   }
 
+  .process-step {
+    padding-top: 14px;
+  }
 
+  .step-num {
+    margin-bottom: 10px;
+  }
 
+  .process-step h3 {
+    margin-bottom: 6px;
+  }
 
-.positioning {
-  padding-block: 44px;
-}
+  .process-step p {
+    margin-top: 0;
 
-.positioning-head {
-  margin-bottom: 28px;
-}
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
 
-.positioning-head .eyebrow {
-  margin-bottom: 14px;
-}
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
 
-.positioning-head h2 {
-  font-size: clamp(2rem, 8vw, 2.6rem);
-  line-height: 1.02;
-}
-
-.positioning-head > p {
-  margin-top: 14px;
-  font-size: 0.84rem;
-  line-height: 1.65;
-}
-
-.process {
-  gap: 32px;
-  margin-top: 38px;
-}
-
-.process-step {
-  padding-top: 14px;
-}
-
-.step-num {
-  margin-bottom: 10px;
-}
-
-.process-step h3 {
-  margin-bottom: 6px;
-}
-
-.process-step p {
-  margin-top: 0;
-  font-size: 0.8rem;
-  line-height: 1.6;
-}
-
-
-
-
- .section-head {
-  flex-direction: column;
-  align-items: flex-start;
-
-  margin-bottom: 16px;
-}
+    margin-bottom: 16px;
+  }
 
   .section-head .button {
     margin-top: 4px;
   }
 
   .film-grid {
-  grid-template-columns: 1fr;
-  gap: 18px;
-}
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
 
   .film-card-content {
     padding: 18px 18px 20px;
@@ -1379,7 +1403,16 @@ h3 {
   .footer-nav {
     align-items: flex-start;
     flex-direction: column;
-    gap: 18px;
+    gap: 4px;
+  }
+
+  /* Stacked in a column these are small, close-together targets, so each one
+     is padded out to a comfortable height rather than being spaced apart with
+     gap — the padding is part of the tap area, the gap is not. */
+  .footer-nav a {
+    display: block;
+
+    padding-block: 11px;
   }
 
   .footer-bottom {
@@ -1402,13 +1435,23 @@ h3 {
    ========================================================= */
 
 @media (max-width: 430px) {
-  .site-nav {
-    gap: 13px;
+  :root {
+    --container-padding: 18px;
   }
 
-  .site-nav a {
-    font-size: 0.5rem;
-    letter-spacing: 0.07em;
+  /* Three labels and two separators. On the narrowest phones this has to be
+     allowed to wrap onto a second line rather than force the page wider. */
+  .film-meta {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .film-card-content {
+    padding: 16px 16px 18px;
+  }
+
+  .footer-bottom {
+    font-size: 0.56rem;
   }
 }
 
@@ -1454,40 +1497,17 @@ h3 {
 
   /* ---------- Header ---------- */
 
+  /* The hero's own padding and spacing are handled in the mobile block
+     above; this block owns the header and its menu panel. */
 
-.hero {
-  min-height: 100svh;
-}
-
-.hero-content {
-  align-items: center;
-  justify-content: flex-end;
-
-  padding: 40px 20px 70px;
-
-  text-align: center;
-}
-
-  .hero-action {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  /* `.site-header` is already fixed and full-width in its base rule, and its
+     height now follows `--header-height`. It only needs to out-stack the
+     menu panel it contains. */
+  .site-header {
+    z-index: 1000;
   }
 
-  .site-header {
-  height: 68px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
   .header-inner {
-    height: 68px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     position: relative;
     z-index: 1001;
   }
@@ -1563,7 +1583,7 @@ h3 {
   .mobile-nav {
     position: absolute;
 
-    top: 68px;
+    top: var(--header-height);
     left: 0;
 
     width: 100%;
@@ -1571,7 +1591,15 @@ h3 {
     display: flex;
     flex-direction: column;
 
-    padding: 20px 24px 28px;
+    padding: 12px 24px calc(20px + env(safe-area-inset-bottom));
+
+    /* On a short screen — a phone in landscape — the full list is taller
+       than what is left below the header, so the panel scrolls rather than
+       running off the bottom with items that can't be reached. */
+    max-height: calc(100svh - var(--header-height));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 
     background: rgba(0, 0, 0, 0.88);
     backdrop-filter: blur(18px);
@@ -1628,7 +1656,7 @@ h3 {
    ========================================================= */
 
 .page-intro {
-  padding-top: 115px;
+  padding-top: calc(var(--header-height) + 37px);
   padding-bottom: 72px;
 }
 
@@ -1744,7 +1772,7 @@ h3 {
 .film-page {
   position: relative;
 
-  padding-top: 108px;
+  padding-top: calc(var(--header-height) + 30px);
 }
 
 /* Ambient wash in the film's own tone, sitting behind the stage. */
@@ -1755,7 +1783,11 @@ h3 {
   top: 0;
   left: 50%;
 
-  width: min(1180px, 110%);
+  /* Capped at the page width rather than bleeding past it. At 110% this hung
+     5% off each edge and pushed the document wider than the viewport, which
+     is a horizontal scrollbar on any screen narrower than ~1070px. The
+     gradient already fades out by 68%, so nothing visible is lost. */
+  width: min(1180px, 100%);
   height: 460px;
 
   transform: translateX(-50%);
@@ -2041,6 +2073,11 @@ h3 {
   min-width: 0;
 
   overflow-x: auto;
+
+  /* Momentum scrolling on iOS, and `contain` so swiping the row to its end
+     doesn't hand the gesture on to the browser's back-navigation. */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 
   /* Keeps the row swipeable on a phone without showing a scrollbar. */
   scrollbar-width: none;
@@ -2674,7 +2711,7 @@ h3 {
 
 @media (max-width: 900px) {
   .page-intro {
-    padding-top: 90px;
+    padding-top: calc(var(--header-height) + 12px);
     padding-bottom: 55px;
   }
 
@@ -2727,7 +2764,9 @@ h3 {
 
 @media (max-width: 640px) {
   .page-intro {
-    padding-top: 65px;
+    /* Was a flat 65px, which is less than the header is tall — the eyebrow
+       was sitting behind it. */
+    padding-top: calc(var(--header-height) + 24px);
     padding-bottom: 40px;
   }
 
@@ -2752,8 +2791,12 @@ h3 {
     padding-bottom: 70px;
   }
 
+  /* Kept to a comfortable minimum height for a thumb — the type is small
+     here, so padding alone would leave the pill about 36px tall. */
   .work-filter {
+    min-height: 44px;
     padding: 11px 20px;
+
     font-size: 0.58rem;
     letter-spacing: 0.12em;
   }
@@ -2807,7 +2850,7 @@ h3 {
 
 @media (max-width: 900px) {
   .film-page {
-    padding-top: 88px;
+    padding-top: calc(var(--header-height) + 18px);
   }
 
   .film-head {
@@ -2822,22 +2865,46 @@ h3 {
     padding-bottom: 0;
   }
 
+  /* The format label drops under the title here, so the row becomes two lines
+     and every cell needs placing by hand — left to auto-flow, the arrow
+     follows the label onto the second line instead of staying beside the
+     title. */
   .film-more-item {
     grid-template-columns: 46px minmax(0, 1fr) 22px;
-    gap: 14px;
+    gap: 0 14px;
+  }
+
+  .film-more-number {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+
+    align-self: center;
+  }
+
+  .film-more-title {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .film-more-format {
     grid-column: 2;
+    grid-row: 2;
 
     margin-top: 4px;
+  }
+
+  .film-more-arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+
+    align-self: center;
   }
 }
 
 
 @media (max-width: 640px) {
   .film-page {
-    padding-top: 78px;
+    padding-top: calc(var(--header-height) + 20px);
   }
 
   .film-page::before {
@@ -2884,6 +2951,16 @@ h3 {
     gap: 12px;
 
     padding: 14px 16px;
+  }
+
+  /* These are the page's main control on a phone, so they get a thumb-sized
+     height rather than the tighter desktop proportions. */
+  .film-chip {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 44px;
+    padding: 10px 18px;
   }
 
   /* Let the swipeable row reach the screen edges. */
