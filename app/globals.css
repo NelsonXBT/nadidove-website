@@ -37,15 +37,23 @@
      the header when it shrinks on smaller screens. */
   --header-height: 78px;
 
-  --section-space: clamp(80px, 8vw, 120px);
+  /* Sections stack, so this is half of the gap between two of them, not the
+     whole thing. At 120px the seams read as holes rather than breathing room. */
+  --section-space: clamp(56px, 5.2vw, 76px);
 
   /* -------------------------------------------------------
      TYPOGRAPHY
+
+     One scale for the whole site. Every size below is fluid
+     where it needs to be, which is what lets the responsive
+     blocks further down carry no font-size overrides at all —
+     the clamp does that work once, here, instead of being
+     re-guessed at each breakpoint.
      ------------------------------------------------------- */
 
-  /* `--font-inter` is injected by next/font on the <html> element. */
+  /* Both families are injected by next/font on the <html> element. */
   --font-sans:
-    var(--font-inter),
+    var(--font-archivo),
     ui-sans-serif,
     -apple-system,
     BlinkMacSystemFont,
@@ -55,9 +63,53 @@
     sans-serif;
 
   --font-serif:
+    var(--font-instrument-serif),
     Georgia,
     "Times New Roman",
     serif;
+
+  /* Display — page titles. Large and tightly tracked; the scale is where the
+     cinematic weight of the site comes from, not from a novelty face. */
+  --text-display: clamp(3rem, 7.5vw, 6rem);
+
+  /* The hero headline sits over moving footage, so it runs a step below the
+     page titles to stay legible against it. */
+  --text-hero: clamp(1.9rem, 4.4vw, 3.5rem);
+
+  --text-h2: clamp(1.9rem, 3.6vw, 3rem);
+  --text-h3: clamp(1.1rem, 1.35vw, 1.3rem);
+
+  /* The one serif voice: the About epigraph. */
+  --text-epigraph: clamp(1.3rem, 2.4vw, 1.9rem);
+
+  /* The contact address — sized to fit the narrowest column it appears in. */
+  --text-address: clamp(1.3rem, 2.2vw, 1.85rem);
+
+  --text-lead: clamp(1.0625rem, 1.1vw, 1.1875rem);
+  --text-body: 0.9375rem;
+  --text-body-sm: 0.875rem;
+
+  /* Uppercase, tracked: eyebrows, section labels, meta rows. */
+  --text-label: 0.6875rem;
+  --text-micro: 0.625rem;
+
+  /* Buttons, chips and filters all share one size. */
+  --text-button: 0.75rem;
+
+  --text-logo: clamp(1.15rem, 1.8vw, 1.55rem);
+
+  /* Tracking. Display type tightens, small caps open up. */
+  --track-display: -0.04em;
+  --track-tight: -0.02em;
+  --track-label: 0.16em;
+  --track-button: 0.13em;
+
+  /* Leading. */
+  --leading-display: 1;
+  --leading-tight: 1.18;
+  --leading-snug: 1.4;
+  --leading-body: 1.7;
+  --leading-loose: 1.8;
 
   /* -------------------------------------------------------
      MOTION
@@ -108,7 +160,7 @@ body {
 
   font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: var(--leading-snug);
 
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -191,9 +243,9 @@ img {
 
   border-radius: 4px;
 
-  font-size: 0.68rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--track-button);
   text-transform: uppercase;
 
   transform: translateY(-200%);
@@ -203,6 +255,54 @@ img {
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+
+   Content rises into place as it enters the viewport. The
+   hidden state is gated behind `data-reveal-ready`, which
+   `ScrollReveal` only sets once it can guarantee it will
+   reveal them — so with JS off nothing is ever stuck
+   invisible.
+   ========================================================= */
+
+html[data-reveal-ready] [data-reveal="out"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+html[data-reveal-ready] [data-reveal] {
+  transition:
+    opacity 750ms var(--ease-out),
+    transform 750ms var(--ease-out);
+}
+
+html[data-reveal-ready] [data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggering the children of a grid or list reads as one movement rather than
+   several unrelated ones. */
+html[data-reveal-ready] .film-card:nth-child(2) [data-reveal],
+html[data-reveal-ready] .film-card:nth-child(2),
+html[data-reveal-ready] .process-step:nth-child(2),
+html[data-reveal-ready] .tenet:nth-child(2),
+html[data-reveal-ready] .contact-reason:nth-child(2) {
+  transition-delay: 70ms;
+}
+
+html[data-reveal-ready] .film-card:nth-child(3),
+html[data-reveal-ready] .process-step:nth-child(3),
+html[data-reveal-ready] .tenet:nth-child(3),
+html[data-reveal-ready] .contact-reason:nth-child(3) {
+  transition-delay: 140ms;
+}
+
+html[data-reveal-ready] .film-card:nth-child(n + 4) {
+  transition-delay: 200ms;
 }
 
 
@@ -244,20 +344,20 @@ h3 {
 }
 
 h2 {
-  font-size: clamp(2.25rem, 5vw, 4.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
+  font-size: var(--text-h2);
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 }
 
 h3 {
-  font-size: 1.25rem;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: var(--text-h3);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--track-tight);
 }
 
 .body-lg {
-  font-size: clamp(1rem, 1.25vw, 1.15rem);
-  line-height: 1.75;
+  font-size: var(--text-lead);
+  line-height: var(--leading-body);
 }
 
 
@@ -271,10 +371,10 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.68rem;
+  font-size: var(--text-label);
   font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -289,15 +389,15 @@ h3 {
   justify-content: center;
   gap: 12px;
 
-  min-height: 50px;
-  padding: 0 24px;
+  min-height: 52px;
+  padding: 0 26px;
 
   border: 1px solid transparent;
   border-radius: 6px;
 
-  font-size: 0.7rem;
+  font-size: var(--text-button);
   font-weight: 600;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--track-button);
   line-height: 1;
   text-transform: uppercase;
 
@@ -338,19 +438,6 @@ h3 {
   border-color: rgba(242, 238, 232, 0.3);
 }
 
-.button--text {
-  min-height: auto;
-  padding: 0;
-
-  background: transparent;
-  color: var(--color-text-muted);
-}
-
-.button--text:hover {
-  color: var(--color-text);
-}
-
-
 /* =========================================================
    HEADER
    ========================================================= */
@@ -365,11 +452,29 @@ h3 {
 
   z-index: 100;
 
-  border-bottom: none;
-
   background: rgb(0, 0, 0);
 
-  box-shadow: none;
+  /* Transparent until scrolled, so the hairline fades in rather than snapping. */
+  border-bottom: 1px solid transparent;
+
+  transition:
+    height var(--transition-base),
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    backdrop-filter var(--transition-base);
+}
+
+/* Once the page has moved, the bar condenses and separates itself from the
+   content passing under it. */
+.site-header--scrolled {
+  height: calc(var(--header-height) - 12px);
+
+  background: rgba(8, 8, 7, 0.72);
+
+  border-bottom-color: var(--color-border);
+
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 .site-logo,
@@ -393,11 +498,11 @@ h3 {
 
   color: #f5f1eb;
 
-  font-size: 1.7rem;
-  font-weight: 800;
+  font-size: var(--text-logo);
+  font-weight: 700;
 
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--track-button);
 
   white-space: nowrap;
 
@@ -419,9 +524,9 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.67rem;
+  font-size: var(--text-label);
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--track-button);
   text-transform: uppercase;
 
   transition: color var(--transition-fast);
@@ -605,10 +710,14 @@ h3 {
 .hero .eyebrow {
   margin-bottom: 380px;
 
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.525);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+
+  /* Sits over footage, so it needs more presence than the muted token gives
+     it on a solid background — but still reads as a label, not a heading. */
+  color: rgba(242, 238, 232, 0.72);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -617,10 +726,10 @@ h3 {
 
   color: var(--color-text);
 
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-size: var(--text-hero);
   font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
 }
@@ -645,14 +754,14 @@ h3 {
    ========================================================= */
 
 .positioning {
-  padding-block: 64px;
+  padding-block: var(--section-space);
   background: var(--color-background-soft);
   border-bottom: 1px solid var(--color-border);
 }
 
 .positioning-head {
   max-width: 680px;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 
 .positioning-head .eyebrow {
@@ -661,8 +770,8 @@ h3 {
 
 .positioning-head h2 {
   max-width: 680px;
-  font-size: clamp(2rem, 3.5vw, 3.4rem);
-  line-height: 1.02;
+  font-size: var(--text-h2);
+  line-height: var(--leading-display);
 }
 
 .positioning-head > p {
@@ -672,8 +781,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.88rem;
-  line-height: 1.65;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 .process {
@@ -681,7 +790,7 @@ h3 {
   grid-template-columns: repeat(3, 1fr);
   gap: 34px;
 
-  margin-top: 56px;
+  margin-top: 48px;
 }
 
 .process-step {
@@ -712,9 +821,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.65rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-label);
 }
 
 .process-step h3 {
@@ -727,8 +836,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.82rem;
-  line-height: 1.7;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
 }
 
 .process-step a {
@@ -765,7 +874,7 @@ h3 {
 
 .section-head h2 {
   max-width: 620px;
-  font-size: clamp(1.5rem, 4.5vw, 2.3rem);
+  font-size: var(--text-h2);
   line-height: 1;
 }
 
@@ -1006,9 +1115,9 @@ h3 {
 .film-card-watch {
   color: var(--color-text);
 
-  font-size: 0.6rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -1041,8 +1150,11 @@ h3 {
     border-left-width: 9px;
   }
 
+  /* The badge alone carries the affordance here. On a touch screen the overlay
+     never fades, so a label as well as a badge is two things competing with
+     whatever the poster already has burned into it. */
   .film-card-watch {
-    font-size: 0.55rem;
+    display: none;
   }
 }
 
@@ -1060,9 +1172,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.6rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--track-button);
   text-transform: uppercase;
 }
 
@@ -1071,10 +1183,10 @@ h3 {
 
   color: var(--color-text);
 
-  font-size: 1.1rem;
+  font-size: var(--text-h3);
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--track-tight);
 }
 
 .film-card-description {
@@ -1082,8 +1194,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.8rem;
-  line-height: 1.55;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-snug);
 }
 
 
@@ -1100,42 +1212,6 @@ h3 {
   padding: 12px 18px;
 
   border: 1px solid var(--color-border-strong);
-}
-
-
-/* =========================================================
-   CONTACT
-   ========================================================= */
-
-.contact {
-  padding-block: 95px;
-  background: var(--color-background);
-  border-top: 1px solid var(--color-border);
-}
-
-.contact-inner {
-  max-width: 760px;
-}
-
-.contact-inner h2 {
-  max-width: 700px;
-
-  margin-top: 0;
-}
-
-.contact-inner > p {
-  max-width: 570px;
-
-  margin-top: 28px;
-
-  color: var(--color-text-muted);
-
-  font-size: 0.92rem;
-  line-height: 1.75;
-}
-
-.contact-inner .button {
-  margin-top: 28px;
 }
 
 
@@ -1162,7 +1238,6 @@ h3 {
 }
 
 
-
 .footer-nav {
   display: flex;
   align-items: center;
@@ -1172,9 +1247,9 @@ h3 {
 .footer-nav a {
   color: var(--color-text-muted);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 500;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--track-button);
   text-transform: uppercase;
 
   transition: color var(--transition-fast);
@@ -1197,8 +1272,8 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
+  font-size: var(--text-label);
+  letter-spacing: var(--track-button);
 }
 
 .footer-bottom span:last-child {
@@ -1208,9 +1283,9 @@ h3 {
 .footer-brand {
   color: var(--color-text);
 
-  font-size: 1rem;
+  font-size: var(--text-lead);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--track-tight);
 
   transition: opacity var(--transition-fast);
 }
@@ -1218,7 +1293,6 @@ h3 {
 .footer-brand:hover {
   opacity: 0.7;
 }
-
 
 
 /* =========================================================
@@ -1274,14 +1348,8 @@ h3 {
 @media (max-width: 640px) {
   :root {
     --container-padding: 20px;
-    --section-space: 76px;
 
     --header-height: 68px;
-  }
-
-  .hero-title {
-    font-size: clamp(1.35rem, 6vw, 1.7rem);
-    line-height: 1.1;
   }
 
   /* Full width so the button is centred under the centred title, rather than
@@ -1300,10 +1368,6 @@ h3 {
     padding-inline: 20px;
   }
 
-  h2 {
-    font-size: clamp(2.35rem, 12vw, 4rem);
-  }
-
   .positioning {
     padding-block: 44px;
   }
@@ -1316,16 +1380,11 @@ h3 {
     margin-bottom: 14px;
   }
 
-  .positioning-head h2 {
-    font-size: clamp(2rem, 8vw, 2.6rem);
-    line-height: 1.02;
-  }
-
   .positioning-head > p {
     margin-top: 14px;
 
-    font-size: 0.84rem;
-    line-height: 1.65;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body);
   }
 
   .process {
@@ -1348,8 +1407,8 @@ h3 {
   .process-step p {
     margin-top: 0;
 
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body);
   }
 
   .section-head {
@@ -1374,20 +1433,12 @@ h3 {
 
   .film-card-title {
     margin-bottom: 6px;
-    font-size: 1.05rem;
+    font-size: var(--text-h3);
   }
 
   .film-card-description {
-    font-size: 0.78rem;
-    line-height: 1.55;
-  }
-
-  .contact-inner h2 {
-    margin-top: 22px;
-  }
-
-  .contact-inner > p {
-    font-size: 0.92rem;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-snug);
   }
 
   .site-footer {
@@ -1451,7 +1502,7 @@ h3 {
   }
 
   .footer-bottom {
-    font-size: 0.56rem;
+    font-size: var(--text-micro);
   }
 }
 
@@ -1465,6 +1516,14 @@ h3 {
     scroll-behavior: auto;
   }
 
+  /* The reveal is off rather than fast: a 0.01ms fade from opacity 0 still
+     risks a flash, and there is no reason to move anything at all here. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   *,
   *::before,
   *::after {
@@ -1473,7 +1532,6 @@ h3 {
     transition-duration: 0.01ms !important;
   }
 }
-
 
 
 /* =========================================================
@@ -1513,8 +1571,8 @@ h3 {
   }
 
   .site-logo {
-    font-size: 1.15rem;
-    letter-spacing: 0.1em;
+    font-size: var(--text-h3);
+    letter-spacing: var(--track-button);
   }
 
   /* Hide desktop navigation */
@@ -1525,8 +1583,10 @@ h3 {
   /* ---------- Hamburger ---------- */
 
   .mobile-menu-button {
-    width: 40px;
-    height: 40px;
+    /* 44px is the floor for a thumb; the bars stay 24px so the icon itself
+       does not grow with the target. */
+    width: 44px;
+    height: 44px;
 
     padding: 0;
     border: 0;
@@ -1537,6 +1597,8 @@ h3 {
     align-items: flex-end;
     justify-content: center;
     gap: 5px;
+
+    margin-right: -4px;
 
     cursor: pointer;
 
@@ -1583,7 +1645,9 @@ h3 {
   .mobile-nav {
     position: absolute;
 
-    top: var(--header-height);
+    /* Follows the header's own height so the panel stays flush with it once
+       the bar condenses on scroll. */
+    top: 100%;
     left: 0;
 
     width: 100%;
@@ -1605,8 +1669,8 @@ h3 {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 
     opacity: 0;
     visibility: hidden;
@@ -1635,14 +1699,14 @@ h3 {
 
     padding: 16px 0;
 
-    font-size: 0.75rem;
+    font-size: var(--text-button);
     font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: var(--track-button);
     text-transform: uppercase;
 
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--color-text);
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .mobile-nav a:last-child {
@@ -1657,7 +1721,7 @@ h3 {
 
 .page-intro {
   padding-top: calc(var(--header-height) + 37px);
-  padding-bottom: 72px;
+  padding-bottom: 56px;
 }
 
 .page-intro .eyebrow {
@@ -1665,9 +1729,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -1677,10 +1741,10 @@ h3 {
   color: var(--color-text);
 
   font-family: var(--font-sans);
-  font-size: clamp(3.5rem, 7vw, 6.5rem);
+  font-size: var(--text-display);
   font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 }
 
 .page-intro .body-lg {
@@ -1690,8 +1754,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: var(--text-lead);
+  line-height: var(--leading-body);
 }
 
 
@@ -1705,7 +1769,7 @@ h3 {
 
 .films-section {
   padding-top: 12px;
-  padding-bottom: 110px;
+  padding-bottom: var(--section-space);
 }
 
 .work-filters {
@@ -1717,7 +1781,12 @@ h3 {
 }
 
 .work-filter {
-  padding: 13px 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 0 24px;
 
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -1726,9 +1795,9 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.62rem;
+  font-size: var(--text-button);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-button);
   line-height: 1;
   text-transform: uppercase;
 
@@ -1756,7 +1825,7 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.88rem;
+  font-size: var(--text-body);
   text-align: center;
 }
 
@@ -1818,9 +1887,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.6rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 
   transition: color var(--transition-fast);
@@ -1845,10 +1914,10 @@ h3 {
   color: var(--color-text);
 
   font-family: var(--font-sans);
-  font-size: clamp(2.4rem, 6.5vw, 5.25rem);
+  font-size: var(--text-display);
   font-weight: 400;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 }
 
 .film-meta {
@@ -1862,9 +1931,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.6rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -1948,9 +2017,9 @@ h3 {
   background:
     linear-gradient(
       to top,
-      rgba(6, 6, 6, 0.78),
-      rgba(6, 6, 6, 0.12) 55%,
-      rgba(6, 6, 6, 0.3)
+      rgba(6, 6, 6, 0.88),
+      rgba(6, 6, 6, 0.12) 52%,
+      rgba(6, 6, 6, 0.34)
     );
 }
 
@@ -2005,29 +2074,14 @@ h3 {
   bottom: 22px;
   left: 24px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-
   text-align: left;
 
   color: var(--color-text-subtle);
 
-  font-size: 0.58rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
-}
-
-.film-player-cta-title {
-  max-width: 34ch;
-
-  color: var(--color-text);
-
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  text-transform: none;
 }
 
 .film-player-frame {
@@ -2060,9 +2114,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.56rem;
+  font-size: var(--text-micro);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -2089,9 +2143,14 @@ h3 {
 }
 
 .film-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   flex-shrink: 0;
 
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: 0 20px;
 
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -2100,9 +2159,9 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.6rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--track-button);
   line-height: 1;
 
   cursor: pointer;
@@ -2145,17 +2204,17 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.58rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
 .film-stage-synopsis {
   color: var(--color-text-muted);
 
-  font-size: 0.88rem;
-  line-height: 1.8;
+  font-size: var(--text-body);
+  line-height: var(--leading-loose);
 }
 
 .film-stage-external {
@@ -2168,9 +2227,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.58rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 
   transition: color var(--transition-fast);
@@ -2220,25 +2279,25 @@ h3 {
 .film-more-number {
   color: var(--color-text-subtle);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-label);
 }
 
 .film-more-title {
   color: var(--color-text);
 
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-size: var(--text-h3);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--track-tight);
 }
 
 .film-more-format {
   color: var(--color-text-subtle);
 
-  font-size: 0.58rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -2280,8 +2339,8 @@ h3 {
 
   margin-top: 18px;
 
-  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
-  line-height: 1.02;
+  font-size: var(--text-h2);
+  line-height: var(--leading-display);
 }
 
 .page-cta p {
@@ -2291,8 +2350,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.88rem;
-  line-height: 1.65;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 .page-cta-actions {
@@ -2332,9 +2391,9 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -2349,8 +2408,8 @@ h3 {
 .statement-body > p:not(.statement-lead) {
   color: var(--color-text-muted);
 
-  font-size: 0.95rem;
-  line-height: 1.8;
+  font-size: var(--text-body);
+  line-height: var(--leading-loose);
 }
 
 /* The opening passage is an epigraph — a claim about filmmaking at large,
@@ -2365,14 +2424,14 @@ h3 {
   color: var(--color-text);
 
   font-family: var(--font-serif);
-  font-size: clamp(1.3rem, 2.5vw, 1.95rem);
+  font-size: var(--text-epigraph);
   font-style: italic;
   font-weight: 400;
 
   /* Serif at display size wants air, and none of the negative tracking that
      suits the tight sans headings elsewhere. */
-  line-height: 1.45;
-  letter-spacing: -0.005em;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--track-tight);
 }
 
 
@@ -2407,10 +2466,10 @@ h3 {
 .tenet-title {
   color: var(--color-text);
 
-  font-size: 0.92rem;
+  font-size: var(--text-body);
   font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--track-tight);
 }
 
 /* `dd` carries a browser indent that would break the column edge. */
@@ -2419,62 +2478,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.9rem;
-  line-height: 1.75;
-}
-
-
-/* =========================================================
-   ABOUT — CAPABILITIES
-   ========================================================= */
-
-.capability-list {
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-
-  border-top: 1px solid var(--color-border);
-}
-
-.capability {
-  display: grid;
-  grid-template-columns: 90px minmax(0, 1fr) minmax(0, 1.1fr);
-  align-items: baseline;
-  gap: 32px;
-
-  padding-block: 30px;
-
-  border-bottom: 1px solid var(--color-border);
-
-  transition: background-color var(--transition-fast);
-}
-
-.capability:hover {
-  background: rgba(242, 238, 232, 0.02);
-}
-
-.capability-number {
-  color: var(--color-text-subtle);
-
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-}
-
-.capability-title {
-  margin: 0;
-
-  font-size: clamp(1.15rem, 2vw, 1.5rem);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-}
-
-.capability-description {
-  color: var(--color-text-muted);
-
-  font-size: 0.86rem;
-  line-height: 1.7;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 
@@ -2547,16 +2552,16 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
 .founder-name {
-  font-size: clamp(2rem, 3.4vw, 3rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: var(--text-h2);
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 }
 
 .founder-bio {
@@ -2568,8 +2573,8 @@ h3 {
 .founder-bio p {
   color: var(--color-text-muted);
 
-  font-size: 0.95rem;
-  line-height: 1.8;
+  font-size: var(--text-body);
+  line-height: var(--leading-loose);
 }
 
 .founder-bio p + p {
@@ -2634,10 +2639,10 @@ h3 {
   color: var(--color-text);
 
   font-family: var(--font-sans);
-  font-size: clamp(3rem, 6.5vw, 6rem);
+  font-size: var(--text-display);
   font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--track-display);
 }
 
 .contact-lead {
@@ -2674,10 +2679,10 @@ h3 {
 .contact-reason-title {
   color: var(--color-text);
 
-  font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+  font-size: var(--text-h3);
   font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -0.025em;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--track-tight);
 }
 
 /* `dd` carries a browser indent that would break the column edge. */
@@ -2688,8 +2693,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.9rem;
-  line-height: 1.75;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 
@@ -2705,9 +2710,9 @@ h3 {
 .contact-direct-label {
   color: var(--color-text-subtle);
 
-  font-size: 0.62rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -2733,10 +2738,10 @@ h3 {
 }
 
 .contact-direct-address {
-  font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+  font-size: var(--text-address);
   font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--track-tight);
 
   /* An address broken across two lines is unreadable, so the type scale is
      sized to fit the narrowest column instead of being allowed to wrap. */
@@ -2746,8 +2751,8 @@ h3 {
 .contact-direct-arrow {
   flex-shrink: 0;
 
-  font-size: 1.05rem;
-  line-height: 1.15;
+  font-size: var(--text-h3);
+  line-height: var(--leading-tight);
 
   transition: transform var(--transition-base);
 }
@@ -2770,8 +2775,8 @@ h3 {
 
   color: var(--color-text-muted);
 
-  font-size: 0.86rem;
-  line-height: 1.75;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
 }
 
 .contact-direct-reply {
@@ -2779,8 +2784,8 @@ h3 {
 
   color: var(--color-text-subtle);
 
-  font-size: 0.86rem;
-  line-height: 1.75;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
 }
 
 
@@ -2831,10 +2836,6 @@ h3 {
     padding-bottom: 55px;
   }
 
-  .page-intro .heading-xl {
-    font-size: clamp(3rem, 9vw, 5rem);
-  }
-
   .films-section {
     padding-bottom: 80px;
   }
@@ -2855,15 +2856,6 @@ h3 {
   .statement-label {
     position: static;
     padding-top: 0;
-  }
-
-  .capability {
-    grid-template-columns: 60px minmax(0, 1fr);
-    gap: 12px 20px;
-  }
-
-  .capability-description {
-    grid-column: 2;
   }
 
   /* One column, with the address lifted above the reasons so it is the first
@@ -2921,31 +2913,16 @@ h3 {
     margin-bottom: 16px;
   }
 
-  .page-intro .heading-xl {
-    font-size: clamp(2.4rem, 12vw, 3.6rem);
-    line-height: 0.98;
-  }
-
   .page-intro .body-lg {
     margin-top: 20px;
 
-    font-size: 0.88rem;
-    line-height: 1.7;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
   }
 
   .films-section {
     padding-top: 0;
     padding-bottom: 70px;
-  }
-
-  /* Kept to a comfortable minimum height for a thumb — the type is small
-     here, so padding alone would leave the pill about 36px tall. */
-  .work-filter {
-    min-height: 44px;
-    padding: 11px 20px;
-
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
   }
 
   .contact-page {
@@ -2958,14 +2935,13 @@ h3 {
 
   .contact-title {
     margin-top: 18px;
-    font-size: clamp(2.6rem, 13vw, 3.6rem);
   }
 
   .contact-lead {
     margin-top: 20px;
 
-    font-size: 0.92rem;
-    line-height: 1.7;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
   }
 
   .contact-reason {
@@ -2974,16 +2950,12 @@ h3 {
 
   .contact-reason-text {
     margin-top: 8px;
-    font-size: 0.86rem;
+    font-size: var(--text-body-sm);
   }
 
   .contact-direct-note,
   .contact-direct-reply {
-    font-size: 0.84rem;
-  }
-
-  .capability {
-    padding-block: 22px;
+    font-size: var(--text-body-sm);
   }
 
   .statement {
@@ -2992,7 +2964,7 @@ h3 {
 
   .statement-lead {
     padding-bottom: 24px;
-    line-height: 1.5;
+    line-height: var(--leading-snug);
   }
 
   /* The term sits above its description on a phone — a 180px first column
@@ -3009,7 +2981,7 @@ h3 {
   }
 
   .tenet-text {
-    font-size: 0.86rem;
+    font-size: var(--text-body-sm);
   }
 
   .team-label {
@@ -3029,8 +3001,8 @@ h3 {
   }
 
   .founder-bio p {
-    font-size: 0.88rem;
-    line-height: 1.75;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
   }
 
   .not-found {
@@ -3125,10 +3097,6 @@ h3 {
     height: 300px;
   }
 
-  .film-title {
-    font-size: clamp(1.9rem, 10vw, 2.9rem);
-  }
-
   .film-stage {
     /* Full-bleed on a phone: the player reads as the screen, not a card. */
     margin-inline: calc(var(--container-padding) * -1);
@@ -3155,26 +3123,12 @@ h3 {
     left: 16px;
   }
 
-  .film-player-cta-title {
-    font-size: 0.86rem;
-  }
-
   .film-chips {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
 
     padding: 14px 16px;
-  }
-
-  /* These are the page's main control on a phone, so they get a thumb-sized
-     height rather than the tighter desktop proportions. */
-  .film-chip {
-    display: inline-flex;
-    align-items: center;
-
-    min-height: 44px;
-    padding: 10px 18px;
   }
 
   /* Let the swipeable row reach the screen edges. */
@@ -3190,8 +3144,8 @@ h3 {
   }
 
   .film-stage-synopsis {
-    font-size: 0.86rem;
-    line-height: 1.75;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body);
   }
 
   .film-more-item {

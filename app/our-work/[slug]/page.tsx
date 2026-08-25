@@ -71,7 +71,7 @@ export default async function FilmPage({ params }: FilmPageProps) {
       <Container>
         <Link href="/our-work" className="film-back">
           <span aria-hidden="true">←</span>
-          Our Work
+          Back to Films
         </Link>
 
         <div className="film-head">

@@ -64,6 +64,7 @@ export default function FilmStage({ film }: FilmStageProps) {
               type="button"
               className="film-player-poster"
               onClick={() => setPlaying(true)}
+              aria-label={`Play ${active.heading}`}
             >
               <Image
                 src={youtubeThumbnail(active.youtubeId, quality)}
@@ -83,12 +84,11 @@ export default function FilmStage({ film }: FilmStageProps) {
                 <span className="film-player-play-icon" aria-hidden="true" />
               </span>
 
-              <span className="film-player-cta">
-                Play
-                <span className="film-player-cta-title">
-                  {active.heading}
-                </span>
-              </span>
+              {/* Just the verb. The film's name is the page heading above and
+                  the active video's name is in the panel beside it, so
+                  repeating it here only fought with whatever the poster has
+                  burned into its own artwork. */}
+              <span className="film-player-cta">Play</span>
             </button>
           )}
         </div>

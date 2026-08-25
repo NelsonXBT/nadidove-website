@@ -10,6 +10,7 @@ export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [renderedPath, setRenderedPath] = useState(pathname);
+  const [scrolled, setScrolled] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -20,6 +21,18 @@ export default function Header() {
     setRenderedPath(pathname);
     setMenuOpen(false);
   }
+
+  // The header sits on solid black over the hero video. Once the page has
+  // moved, it condenses and picks up a hairline so it reads as a bar over
+  // content rather than part of the frame.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Stop the page behind the open panel from scrolling.
   useEffect(() => {
@@ -39,7 +52,9 @@ export default function Header() {
     pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="site-header">
+    <header
+      className={`site-header ${scrolled ? "site-header--scrolled" : ""}`}
+    >
       <div className="header-inner container">
         <Link
           href="/"

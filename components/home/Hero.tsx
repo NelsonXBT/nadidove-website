@@ -18,7 +18,7 @@ export default function Hero() {
 
         <div className="hero-action">
           <Link href="/our-work" className="button button--primary">
-            View Our Works
+            View Our Films
           </Link>
         </div>
       </Container>

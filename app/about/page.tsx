@@ -145,7 +145,7 @@ export default function AboutPage() {
 
           <div className="page-cta-actions">
             <Link href="/our-work" className="button button--primary">
-              View Our Work
+              View Our Films
               <span aria-hidden="true">→</span>
             </Link>
 

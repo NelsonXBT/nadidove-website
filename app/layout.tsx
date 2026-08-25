@@ -1,15 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Archivo, Instrument_Serif } from "next/font/google";
 
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import ScrollReveal from "@/components/layout/ScrollReveal";
 import { site } from "@/lib/site";
 
 import "./globals.css";
 
-const inter = Inter({
+/**
+ * Archivo is a grotesque cut for headlines as well as text, so one family
+ * carries the whole site: it holds together at 96px with tight tracking where
+ * a UI-first face goes flat, and stays readable at 15px.
+ */
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+/** Used for one thing: the epigraph on the About page. */
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
   display: "swap",
 });
 
@@ -61,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={inter.variable}
+      className={`${archivo.variable} ${instrumentSerif.variable}`}
       // Next 16 no longer neutralises `scroll-behavior: smooth` during route
       // changes unless this attribute is present, which would otherwise make
       // every navigation animate its way back to the top.
@@ -77,6 +92,8 @@ export default function RootLayout({
         {children}
 
         <Footer />
+
+        <ScrollReveal />
       </body>
     </html>
   );

@@ -4,21 +4,18 @@ import Section from "@/components/ui/Section";
 const processSteps = [
   {
     number: "01",
-    label: "Director-Led",
-    title: "Directors first",
+    title: "Director-Led",
     description:
       "We direct every creative choice, using AI as a filmmaking tool to bring our stories, characters, and vision to life.",
   },
   {
     number: "02",
-    label: "Cinematic",
     title: "Cinematic",
     description:
       "We craft every frame with cinematic intention, from composition and lighting to movement and atmosphere, creating films that feel immersive, emotional, and alive.",
   },
   {
     number: "03",
-    label: "AI-Native",
     title: "AI-Native",
     description:
       "Built from the ground up with AI at the heart of our creative process, allowing us to explore new visual possibilities and bring ambitious stories to life.",
@@ -42,9 +39,9 @@ export default function Process() {
         <div className="process">
           {processSteps.map((step) => (
             <article className="process-step" key={step.number}>
-              <span className="step-num">
-                {step.number} — {step.label}
-              </span>
+              {/* The number alone — the label used to repeat the heading
+                  word for word underneath it. */}
+              <span className="step-num">{step.number}</span>
 
               <h3>{step.title}</h3>
 

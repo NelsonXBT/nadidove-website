@@ -9,7 +9,7 @@ import { films } from "@/lib/films";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Our Work",
+  title: "Films",
   description:
     "The Nadidove catalogue — original short films and animations written, directed and generated in-house.",
   alternates: { canonical: "/our-work" },
@@ -20,9 +20,7 @@ export default function OurWorkPage() {
     <main id="main">
       <section className="page-intro">
         <Container>
-          <Eyebrow>Portfolio</Eyebrow>
-
-          <h1 className="heading-xl">Our Work</h1>
+          <h1 className="heading-xl">Films</h1>
         </Container>
       </section>
 
