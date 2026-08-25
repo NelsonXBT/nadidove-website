@@ -13,10 +13,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * One section, two columns. The reasons to get in touch sit on the left; the
- * page's single action — the address itself — sits on the right, with nothing
- * competing with it. Below 900px the address moves above the reasons so it is
- * never something a visitor has to scroll to find.
+ * One compact section. The reasons to get in touch sit on the left; the
+ * address sits on the right on its own base, as the single thing on the page
+ * meant to be clicked.
+ *
+ * The DOM runs opening -> reasons -> address, which is the reading order on a
+ * phone. On a wide screen the grid lifts the address into a column beside the
+ * other two without moving it in the markup, so keyboard order still follows
+ * the page.
  */
 export default function ContactPage() {
   return (
@@ -27,34 +31,7 @@ export default function ContactPage() {
             <Eyebrow>Contact</Eyebrow>
 
             <h1 className="contact-title">Let’s Talk</h1>
-
-            <p className="body-lg contact-lead">
-              Have a project in mind, a story you want to bring to life, or an
-              opportunity to work with Nadidove? We’d love to hear from you.
-            </p>
           </div>
-
-          <aside className="contact-direct">
-            <p className="contact-direct-label">Send us an email</p>
-
-            <a href={mailto()} className="contact-direct-link">
-              <span className="contact-direct-address">{site.email}</span>
-
-              <span className="contact-direct-arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
-
-            <p className="contact-direct-note">
-              Tell us what you’re looking to create, collaborate on, or
-              promote. Include any relevant details, references, or links that
-              will help us understand your idea.
-            </p>
-
-            <p className="contact-direct-reply">
-              We’ll get back to you as soon as we can.
-            </p>
-          </aside>
 
           <dl className="contact-reasons">
             {contactReasons.map((reason) => (
@@ -65,6 +42,33 @@ export default function ContactPage() {
               </div>
             ))}
           </dl>
+
+          <aside className="contact-direct">
+            {/* The whole panel is the link, so the target is the size of the
+                block rather than the width of the address inside it. */}
+            <a href={mailto()} className="contact-direct-link">
+              <span className="contact-direct-label">Send us an email</span>
+
+              <span className="contact-direct-row">
+                <span className="contact-direct-address">{site.email}</span>
+
+                <span className="contact-direct-arrow" aria-hidden="true">
+                  →
+                </span>
+              </span>
+            </a>
+
+            <div className="contact-direct-note">
+              <p>
+                Send us an email using the address above. Tell us what you’re
+                looking to create, collaborate on, or promote. Include any
+                relevant details, references, or links that will help us
+                understand your idea.
+              </p>
+
+              <p>We’ll get back to you as soon as possible.</p>
+            </div>
+          </aside>
         </Container>
       </Section>
     </main>

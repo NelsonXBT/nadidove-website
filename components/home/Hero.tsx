@@ -13,7 +13,8 @@ export default function Hero() {
         <Eyebrow>AI-Powered Film Studio</Eyebrow>
 
         <h1 className="hero-title">
-          We shoot with light that <em>was never there.</em>
+          Bringing Artificial Intelligence{" "}
+          <em>Into the Craft of Filmmaking</em>
         </h1>
 
         <div className="hero-action">
