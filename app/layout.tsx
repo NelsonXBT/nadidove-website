@@ -4,6 +4,7 @@ import { Archivo, Instrument_Serif } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import ScrollReveal from "@/components/layout/ScrollReveal";
+import SiteChrome from "@/components/layout/SiteChrome";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -87,11 +88,15 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <Header />
+        <SiteChrome>
+          <Header />
+        </SiteChrome>
 
         {children}
 
-        <Footer />
+        <SiteChrome>
+          <Footer />
+        </SiteChrome>
 
         <ScrollReveal />
       </body>
