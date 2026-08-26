@@ -24,6 +24,37 @@ import type { NormalisedRegistration } from "./registration";
 export class SetupError extends Error {}
 
 /**
+ * The admin client, but only once the credentials it needs are actually
+ * present.
+ *
+ * Without this, a deployment missing its environment variables reaches
+ * `createClient()` and fails with supabase-js's own "supabaseUrl is required" —
+ * which surfaces on the registration screen as a stray library error rather
+ * than something the operator can act on. Naming the missing variables turns it
+ * into an instruction.
+ */
+function adminClient() {
+  const missing = (
+    [
+      ["NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL],
+      ["SUPABASE_SECRET_KEY", process.env.SUPABASE_SECRET_KEY],
+    ] as const
+  )
+    .filter(([, value]) => !value)
+    .map(([name]) => name);
+
+  if (missing.length > 0) {
+    throw new SetupError(
+      `The staff portal is not connected to its database: ${missing.join(
+        " and ",
+      )} ${missing.length === 1 ? "is" : "are"} not set on the server.`,
+    );
+  }
+
+  return createAdminClient();
+}
+
+/**
  * Supabase projects no longer grant the Data API roles access to new tables
  * automatically, so a freshly-pushed migration answers every query with
  * `42501 permission denied`. That looks like a bug in the portal from the
@@ -63,7 +94,7 @@ function assertUsable(error: { code?: string; message: string } | null): void {
  * without bumping the version, the stored copy is corrected to match.
  */
 export async function ensureActiveAgreement(): Promise<AgreementRecord> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
   const content = agreementPlainText();
 
   const { data: existing, error: readError } = await supabase
@@ -158,7 +189,7 @@ export async function recordAgreementAcceptance(
   agreementVersion: string,
   acceptedAt?: string,
 ): Promise<{ acceptance: AcceptanceRecord; alreadyAccepted: boolean }> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data: existing, error: readError } = await supabase
     .from("staff_agreement_acceptances")
@@ -235,7 +266,7 @@ export async function insertStaffMember(
   registration: NormalisedRegistration,
   submittedAt: string,
 ): Promise<StaffMemberRecord> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data, error } = await supabase
     .from("staff_members")
@@ -261,7 +292,7 @@ export async function updateStaffMember(
   id: string,
   patch: Record<string, unknown>,
 ): Promise<StaffMemberRecord> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data, error } = await supabase
     .from("staff_members")
@@ -280,7 +311,7 @@ export async function updateStaffMember(
 }
 
 export async function deleteStaffMember(id: string): Promise<void> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { error } = await supabase.from("staff_members").delete().eq("id", id);
 
@@ -294,7 +325,7 @@ export async function deleteStaffMember(id: string): Promise<void> {
 export async function getStaffMember(
   id: string,
 ): Promise<StaffMemberRecord | null> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data, error } = await supabase
     .from("staff_members")
@@ -327,7 +358,7 @@ export interface StaffListEntry {
 
 /** Every registration, newest first. Reads only what the list needs. */
 export async function listStaffMembers(): Promise<StaffListEntry[]> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data, error } = await supabase
     .from("staff_members")
@@ -349,7 +380,7 @@ export async function listStaffMembers(): Promise<StaffListEntry[]> {
 export async function getAcceptanceForStaffMember(
   staffMemberId: string,
 ): Promise<AcceptanceRecord | null> {
-  const supabase = createAdminClient();
+  const supabase = adminClient();
 
   const { data, error } = await supabase
     .from("staff_agreement_acceptances")

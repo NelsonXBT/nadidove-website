@@ -6,14 +6,15 @@
  * Layout mirrors the source Word/PDF document: A4, Helvetica, a 57pt margin,
  * 14pt bold title, 10.5pt bold section headings, 9.2pt body.
  */
-
 import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
 
 import {
   AGREEMENT_DOCUMENT_HEADING,
+  AGREEMENT_PREAMBLE,
   AGREEMENT_SECTIONS,
   AGREEMENT_VERSION,
   type AgreementClause,
+  clauseParagraphs,
 } from "./agreement";
 import {
   type NormalisedRegistration,
@@ -263,59 +264,6 @@ class Writer {
     this.space(8);
   }
 
-  /**
-   * Two-column table. Sized so the salary column is only as wide as it needs
-   * to be, which keeps the revenue bands on one line each.
-   */
-  table(columns: [string, string], rows: [string, string][]): void {
-    const rowHeight = 17;
-    const rightWidth = 130;
-    const leftWidth = this.contentWidth - rightWidth;
-
-    const cell = (
-      page: PDFPage,
-      top: number,
-      left: string,
-      right: string,
-      bold: boolean,
-    ) => {
-      const font = bold ? this.bold : this.regular;
-      const baseline = top - rowHeight + 5.5;
-
-      page.drawRectangle({
-        x: MARGIN,
-        y: top - rowHeight,
-        width: this.contentWidth,
-        height: rowHeight,
-        borderColor: RULE,
-        borderWidth: 0.6,
-        color: bold ? rgb(0.96, 0.96, 0.96) : undefined,
-      });
-
-      this.drawLine(page, left, MARGIN + 8, baseline, BODY_SIZE, font);
-      this.drawLine(
-        page,
-        right,
-        MARGIN + leftWidth + 8,
-        baseline,
-        BODY_SIZE,
-        font,
-      );
-    };
-
-    this.space(4);
-
-    const header = this.reserve(rowHeight);
-    cell(header.page, header.top, columns[0], columns[1], true);
-
-    for (const [left, right] of rows) {
-      const row = this.reserve(rowHeight);
-      cell(row.page, row.top, left, right, false);
-    }
-
-    this.space(10);
-  }
-
   /** A label above its value, stacked — reads well at any column width. */
   field(label: string, value: string, options: { indent?: number } = {}): void {
     this.paragraph(label.toUpperCase(), {
@@ -387,10 +335,28 @@ function formatDateTime(iso: string): string {
   })} UTC`;
 }
 
-/** Draws every clause of a section, table in its printed position. */
+/**
+ * Draws every clause of a section. A clause number hangs off the first
+ * paragraph only; any further paragraphs of the same clause are indented to
+ * sit under it.
+ */
 function drawSectionBody(writer: Writer, clauses: AgreementClause[]): void {
   for (const clause of clauses) {
-    writer.paragraph(clause.text, { hanging: clause.number });
+    const [first, ...rest] = clauseParagraphs(clause);
+
+    writer.paragraph(first, { hanging: clause.number });
+
+    // The same width `paragraph()` reserves for a hanging number, so a
+    // continuation paragraph lines up under the clause text above it.
+    const indent = clause.number
+      ? writer.measure(`${clause.number} `, BODY_SIZE, writer.regular)
+      : 0;
+
+    for (const paragraph of rest) {
+      writer.space(4);
+      writer.paragraph(paragraph, { indent });
+    }
+
     writer.space(4);
   }
 }
@@ -432,9 +398,9 @@ export async function buildCompletedAgreementPdf(
     last_name: input.registration.last_name,
   });
 
-  doc.setTitle(`Nadidove Films — Team and Employment Agreement — ${person}`);
-  doc.setAuthor("Nadidove Films");
-  doc.setSubject("Completed team and employment agreement");
+  doc.setTitle(`Nadidove Staff Agreement — ${person}`);
+  doc.setAuthor("Nadidove Studio");
+  doc.setSubject("Completed staff agreement");
   doc.setCreator("Nadidove Staff Registration Portal");
 
   const writer = new Writer(doc, regular, bold);
@@ -443,7 +409,6 @@ export async function buildCompletedAgreementPdf(
      Title
   ------------------------------------------------------------ */
 
-  writer.paragraph("NADIDOVE FILMS", { size: TITLE_SIZE, bold: true, leading: 17 });
   writer.paragraph(AGREEMENT_DOCUMENT_HEADING, {
     size: TITLE_SIZE,
     bold: true,
@@ -468,11 +433,11 @@ export async function buildCompletedAgreementPdf(
 
   writer.heading("PARTIES");
 
-  writer.paragraph("Founder", { size: 7.2, color: MUTED, leading: 9.5 });
-  writer.paragraph("Nelson Edeh Chukwuemeka, of Nadidove Films");
+  writer.paragraph("Studio", { size: 7.2, color: MUTED, leading: 9.5 });
+  writer.paragraph("Nadidove Studio, represented by Nadidove Management");
   writer.space(6);
 
-  writer.paragraph("Team Member", { size: 7.2, color: MUTED, leading: 9.5 });
+  writer.paragraph("Staff Member", { size: 7.2, color: MUTED, leading: 9.5 });
   writer.paragraph(person);
 
   writer.space(8);
@@ -481,22 +446,19 @@ export async function buildCompletedAgreementPdf(
      The agreement
   ------------------------------------------------------------ */
 
+  writer.paragraph(AGREEMENT_PREAMBLE);
+  writer.space(6);
+
   for (const section of AGREEMENT_SECTIONS) {
     writer.heading(`${section.number}. ${section.heading}`);
 
     drawSectionBody(writer, section.clauses);
-
-    if (section.table) {
-      writer.table(section.table.columns, section.table.rows);
-    }
-
-    drawSectionBody(writer, section.clausesAfterTable ?? []);
   }
 
   /* ------------------------------------------------------------
      Execution
 
-     Section 7.1 turns on the team member having read and agreed, so
+     Section 6.1 turns on the staff member having read and agreed, so
      the evidence of that sits directly after the terms.
   ------------------------------------------------------------ */
 
@@ -505,13 +467,13 @@ export async function buildCompletedAgreementPdf(
   writer.paragraph("EXECUTION", { size: TITLE_SIZE, bold: true, leading: 17 });
   writer.rule();
 
-  writer.heading("FOUNDER");
+  writer.heading("NADIDOVE MANAGEMENT");
   writer.field("Name", "Nelson Edeh Chukwuemeka");
-  writer.field("For", "Nadidove Films");
+  writer.field("For", "Nadidove Studio");
 
   writer.space(10);
 
-  writer.heading("TEAM MEMBER");
+  writer.heading("STAFF MEMBER");
   writer.field("Full name", person);
   writer.field("Agreement accepted", formatDateTime(input.acceptedAt));
   writer.field("Registration submitted", formatDateTime(input.submittedAt));
@@ -538,7 +500,7 @@ export async function buildCompletedAgreementPdf(
   }
 
   writer.paragraph(
-    `The Team Member accepted this Agreement, version ${AGREEMENT_VERSION}, through the Nadidove Staff Registration Portal on ${formatDateTime(input.acceptedAt)}. Record reference ${input.staffId}.`,
+    `The Staff Member accepted this Agreement, version ${AGREEMENT_VERSION}, through the Nadidove Staff Registration Portal on ${formatDateTime(input.acceptedAt)}. Record reference ${input.staffId}.`,
     { size: 7.8, color: MUTED, leading: 10.5 },
   );
 
@@ -686,7 +648,7 @@ export async function buildCompletedAgreementPdf(
   const pages = doc.getPages();
 
   pages.forEach((page, index) => {
-    const label = `Nadidove Films  ·  ${person}  ·  Page ${index + 1} of ${pages.length}`;
+    const label = `Nadidove Studio  ·  ${person}  ·  Page ${index + 1} of ${pages.length}`;
 
     page.drawText(label, {
       x: MARGIN,
@@ -718,5 +680,5 @@ export function completedPdfFileName(
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
-  return `${slug || "team-member"}-${staffId.slice(0, 8)}-agreement.pdf`;
+  return `${slug || "staff-member"}-${staffId.slice(0, 8)}-agreement.pdf`;
 }

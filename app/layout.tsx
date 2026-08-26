@@ -4,7 +4,6 @@ import { Archivo, Instrument_Serif } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import ScrollReveal from "@/components/layout/ScrollReveal";
-import SiteChrome from "@/components/layout/SiteChrome";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -88,15 +87,16 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <SiteChrome>
-          <Header />
-        </SiteChrome>
+        {/*
+          One header and one footer for every route, the staff portal included.
+          The portal used to be excluded and carry a masthead of its own, which
+          made it read as a separate product sitting on the same domain.
+        */}
+        <Header />
 
         {children}
 
-        <SiteChrome>
-          <Footer />
-        </SiteChrome>
+        <Footer />
 
         <ScrollReveal />
       </body>

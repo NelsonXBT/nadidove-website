@@ -218,7 +218,7 @@ function clickText(text) {
 
 /*
  * `innerText` reflects CSS, and much of this interface is set in `uppercase` —
- * so the page reads "VERSION 2026.1" where the source says "Version 2026.1".
+ * so the page reads "VERSION 2026.2" where the source says "Version 2026.2".
  * Every text assertion therefore compares case-insensitively rather than
  * matching whichever casing the stylesheet happens to apply.
  */
@@ -335,12 +335,15 @@ try {
   ---------------------------------------------------------------- */
 
   await session.navigate("/staff/registration");
-  await session.waitFor(has("Welcome to the"), "the welcome screen");
+  await session.waitFor(
+    has("Nadidove Staff Registration"),
+    "the welcome screen",
+  );
 
   const welcome = await session.eval(bodyText);
 
   report(
-    !shows(welcome, "Loading your registration"),
+    !shows(welcome, "loading…"),
     "welcome screen hydrates past the loading state",
   );
 
@@ -363,17 +366,40 @@ try {
   const agreementText = await session.eval(bodyText);
 
   report(
-    shows(agreementText, "Version 2026.1"),
+    shows(agreementText, "Version 2026.2"),
     "agreement screen shows the active version",
   );
 
+  /*
+   * The document's own heading is deliberately not printed on this screen — the
+   * page is already titled with the agreement — so what is checked here is that
+   * exactly one heading carries the title. Counting headings rather than
+   * occurrences in the text matters because the acceptance checkbox names the
+   * agreement too, which is prose and not a second title.
+   */
+  const titleHeadings = await session.eval(`
+    return [...document.querySelectorAll("h1, h2, h3")].filter(
+      (el) => el.textContent.trim().toLowerCase() === "nadidove staff agreement",
+    ).length;
+  `);
+
   report(
-    shows(agreementText, "TEAM AND EMPLOYMENT AGREEMENT — DRAFT"),
-    "agreement is headed as the source document has it",
+    titleHeadings === 1,
+    "the agreement is titled once, not twice",
+    `${titleHeadings} heading(s)`,
   );
 
   report(
-    shows(agreementText, "PHASE 1 — SALARY STRUCTURE") &&
+    shows(
+      agreementText,
+      "This Agreement governs the terms and conditions of the Staff Member",
+    ),
+    "the opening paragraph of the document is shown",
+  );
+
+  report(
+    shows(agreementText, "PHASE 0") &&
+      shows(agreementText, "PHASE 1 – PHASE 4") &&
       shows(agreementText, "OWNERSHIP OF WORK") &&
       shows(agreementText, "CONFIDENTIALITY AND COMMITMENT") &&
       shows(agreementText, "LEAVING THE TEAM"),
@@ -383,6 +409,11 @@ try {
   report(
     shows(agreementText, "₦5,000"),
     "the naira data-support clause renders",
+  );
+
+  report(
+    shows(agreementText, "₦70,000") && shows(agreementText, "₦250,000"),
+    "the Phase 1 and Phase 4 salary clauses render",
   );
 
   // The accept button must be inert until the box is ticked.
@@ -551,7 +582,12 @@ try {
      8. Review
   ---------------------------------------------------------------- */
 
-  await session.eval(clickText("Submit"));
+  /*
+   * The last step goes to the review screen rather than submitting, and its
+   * button says so — "Submit" belongs to the review screen, which is the only
+   * place a click actually files the registration.
+   */
+  await session.eval(clickText("Review"));
   await session.waitFor(
     `location.pathname === "/staff/registration/preview" && ${has(
       "Review your registration",
@@ -633,7 +669,7 @@ try {
     await session.waitFor(has(heading), heading);
   }
 
-  await session.eval(clickText("Submit"));
+  await session.eval(clickText("Review"));
   await session.waitFor(
     has("Review your registration"),
     "the review screen again",
@@ -670,7 +706,7 @@ try {
   );
 
   report(
-    shows(complete, "2026.1"),
+    shows(complete, "2026.2"),
     "completion shows the accepted agreement version",
   );
 
