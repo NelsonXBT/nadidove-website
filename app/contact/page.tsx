@@ -8,7 +8,7 @@ import { contactReasons, mailto, site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Commercials and brand content, collaborations, or sponsored promotions — email Nadidove directly at hello@nadidove.com.",
+    "Commercials and brand content, collaborations, or sponsored promotions — email Nadidove directly at nadidovefilms@gmail.com.",
   alternates: { canonical: "/contact" },
 };
 

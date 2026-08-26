@@ -17,7 +17,7 @@ export const site = {
   description:
     "Nadidove is a creative film studio creating original stories through imagination, technology and film.",
 
-  email: "hello@nadidove.com",
+  email: "nadidovefilms@gmail.com",
 
   youtube: "https://www.youtube.com/@nadidove",
 } as const;
