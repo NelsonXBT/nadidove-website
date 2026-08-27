@@ -3287,9 +3287,14 @@ h3 {
 }
 
 /* A form and a legal document are both reading tasks, so the column is held to
-   a measure rather than filling the page. The records desk opts out. */
+   a measure rather than filling the page. The records desk opts out.
+
+   The measure is narrower than the container it sits in, so it has to centre
+   itself — left flush inside a 1240px container reads as a page laid out down
+   one side, with the whole right half empty. */
 .portal-inner {
   max-width: 720px;
+  margin-inline: auto;
 }
 
 .portal-inner--wide {
@@ -4138,12 +4143,20 @@ h3 {
     font-size: var(--text-body);
   }
 
-  .portal-block {
+  /* Excludes the tight variant for the same cascade reason as the clause rule
+     below: it is declared earlier in the sheet, so at equal specificity this
+     would override the tighter spacing it asks for. */
+  .portal-block:not(.portal-block--tight) {
     margin-top: 22px;
     padding-top: 18px;
   }
 
-  .portal-clause {
+  /* Only numbered clauses hang a number, and this has to exclude the plain
+     variant explicitly: `.portal-clause--plain` sets its single column earlier
+     in the sheet, so at equal specificity this rule would otherwise win here and
+     fold a section's unnumbered lead-in paragraph into the 2.1rem number
+     column — which renders it one word per line. */
+  .portal-clause:not(.portal-clause--plain) {
     grid-template-columns: 2.1rem minmax(0, 1fr);
   }
 
@@ -4177,6 +4190,19 @@ h3 {
      the narrowest phones, so the letter-spacing eases off with the screen. */
   :root {
     --track-hero: 0.05em;
+  }
+
+  /* "Section 2 of 4" and "Professional Information" are both tracked uppercase,
+     and together they outrun the narrowest phones — which left the section name
+     wrapping against the right edge. Stacked, they read as two lines from the
+     same left edge instead. */
+  .portal-progress-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .portal-progress-name {
+    text-align: left;
   }
 
   .portal-thumbs {
