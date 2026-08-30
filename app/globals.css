@@ -3006,6 +3006,28 @@ h3 {
     padding-bottom: 70px;
   }
 
+  /* One row, whatever the labels are. Pills sized by their own text wrapped
+     onto a second line on a phone and left the row ragged, so here the row
+     becomes equal columns — every chip the same width, filling the line, with
+     the type stepped down to match the smaller pill. */
+  .work-filters {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 8px;
+
+    margin-bottom: 26px;
+  }
+
+  .work-filter {
+    min-height: 40px;
+    padding-inline: 10px;
+
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
   .contact-page {
     padding-top: calc(var(--header-height) + 14px);
     padding-bottom: 40px;
@@ -3118,6 +3140,23 @@ h3 {
 
   .not-found {
     min-height: 60svh;
+  }
+}
+
+
+/* =========================================================
+   SUB-PAGES — VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+  /* "Animations" is the long label, and on a 320px screen a third of the row
+     is barely wider than the word itself — so the chips give up their inner
+     padding and a little tracking before the row gives up its single line. */
+  .work-filter {
+    padding-inline: 6px;
+
+    font-size: var(--text-micro);
+    letter-spacing: 0.06em;
   }
 }
 
