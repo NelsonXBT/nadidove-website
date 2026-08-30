@@ -218,7 +218,7 @@ function clickText(text) {
 
 /*
  * `innerText` reflects CSS, and much of this interface is set in `uppercase` —
- * so the page reads "VERSION 2026.2" where the source says "Version 2026.2".
+ * so the page reads "VERSION 1.0" where the source says "Version 1.0".
  * Every text assertion therefore compares case-insensitively rather than
  * matching whichever casing the stylesheet happens to apply.
  */
@@ -366,7 +366,7 @@ try {
   const agreementText = await session.eval(bodyText);
 
   report(
-    shows(agreementText, "Version 2026.2"),
+    shows(agreementText, "Version 1.0"),
     "agreement screen shows the active version",
   );
 
@@ -706,7 +706,7 @@ try {
   );
 
   report(
-    shows(complete, "2026.2"),
+    shows(complete, "1.0"),
     "completion shows the accepted agreement version",
   );
 

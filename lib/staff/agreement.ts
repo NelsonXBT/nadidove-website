@@ -29,7 +29,7 @@ export const AGREEMENT_DOCUMENT_HEADING = "NADIDOVE STAFF AGREEMENT";
  * they were given, so an old record keeps pointing at the wording that person
  * actually read.
  */
-export const AGREEMENT_VERSION = "2026.2";
+export const AGREEMENT_VERSION = "1.0";
 
 /** The unnumbered paragraph the document opens with, above section 1. */
 export const AGREEMENT_PREAMBLE =

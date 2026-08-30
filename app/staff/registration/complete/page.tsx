@@ -38,7 +38,7 @@ export default function RegistrationCompletePage() {
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [error, setError] = useState("");
 
-  const previewRef = useRef<HTMLIFrameElement | null>(null);
+  const printFrameRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     const id = sessionStorage.getItem(SUBMITTED_ID_KEY);
@@ -87,11 +87,11 @@ export default function RegistrationCompletePage() {
   const pdfUrl = submission ? `/api/staff/${submission.id}/pdf` : null;
 
   /**
-   * Prints the embedded copy where the browser allows it, and otherwise opens
+   * Prints the offscreen copy where the browser allows it, and otherwise opens
    * the PDF in its own tab so the viewer's own print control can be used.
    */
   function printAgreement() {
-    const frame = previewRef.current;
+    const frame = printFrameRef.current;
 
     try {
       if (frame?.contentWindow) {
@@ -118,9 +118,13 @@ export default function RegistrationCompletePage() {
         }
       >
         <p className="portal-lead">
-          Your registration has been submitted and your copy of the{" "}
-          {AGREEMENT_TITLE} has been issued. Please download or print it for
-          your records.
+          Your registration has been successfully submitted, and your copy of
+          the {AGREEMENT_TITLE} has been issued.
+        </p>
+
+        <p className="portal-lead">
+          Please download a soft copy for your records. If you prefer a printed
+          hard copy, click Print to print a copy.
         </p>
       </PortalHead>
 
@@ -207,13 +211,19 @@ export default function RegistrationCompletePage() {
                 </a>
               </div>
 
-              <div className="portal-pdf">
-                <iframe
-                  ref={previewRef}
-                  src={pdfUrl}
-                  title="Your completed agreement"
-                />
-              </div>
+              {/*
+                The copy is loaded but never shown: it exists so Print can
+                raise the browser's own print dialogue for the PDF, falling
+                back to opening it in its own tab where that is refused.
+              */}
+              <iframe
+                ref={printFrameRef}
+                src={pdfUrl}
+                title="Your completed agreement"
+                aria-hidden="true"
+                tabIndex={-1}
+                className="portal-pdf-print"
+              />
             </section>
           ) : (
             <div className="portal-block">

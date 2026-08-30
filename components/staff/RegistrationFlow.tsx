@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AgreementDocument from "@/components/staff/AgreementDocument";
@@ -440,15 +440,25 @@ function RegistrationSteps({ isEditMode }: { isEditMode: boolean }) {
       <PortalPage>
         <PortalHead eyebrow="Welcome" title="Nadidove Staff Registration">
           <p className="portal-lead">
-            Please click Start to begin. You will first review and accept the{" "}
-            {AGREEMENT_TITLE}, then complete your registration details.
+            Please click the Start button below to begin and complete your staff
+            registration.
           </p>
 
-          <p className="portal-note">
-            Have your personal, professional, payment and identification details
-            to hand before beginning. You will need a passport photograph, a
-            government-issued ID and an image of your signature.
-          </p>
+          <div className="portal-note">
+            <p>You will need the following to complete this registration:</p>
+
+            <ol>
+              <li>A clear, high-quality selfie of yourself.</li>
+
+              <li>
+                One valid government-issued ID, such as your NIN, Driver’s
+                License, Voter’s Card, or International Passport. Only one ID is
+                required.
+              </li>
+
+              <li>A clear image of your signature.</li>
+            </ol>
+          </div>
         </PortalHead>
 
         <div className="portal-actions">
@@ -568,7 +578,8 @@ function RegistrationSteps({ isEditMode }: { isEditMode: boolean }) {
         title="Your registration"
       >
         <p className="portal-lead">
-          Complete each section, then review everything before you submit.
+          Please complete each section carefully and ensure that all information
+          provided is accurate and truthful.
         </p>
       </PortalHead>
 
@@ -784,7 +795,18 @@ function RegistrationSteps({ isEditMode }: { isEditMode: boolean }) {
 
             <FileUpload
               label="Signature"
-              description="A clear image of your handwritten signature on plain paper. JPG, PNG or WEBP."
+              description={
+                <>
+                  <p>
+                    Get a plain sheet of paper and sign your signature clearly
+                    and boldly. Write the current date below your signature.
+                    Then, take a clear photo of the paper showing both your
+                    signature and the date.
+                  </p>
+
+                  <p>Upload the photo below in JPG, PNG, or WEBP format.</p>
+                </>
+              }
               value={formData.signature}
               accept="image/jpeg,image/png,image/webp"
               onChange={(file) => handleFileUpload("signature", file)}
@@ -980,7 +1002,7 @@ function FileUpload({
   onChange,
 }: {
   label: string;
-  description: string;
+  description: ReactNode;
   value: UploadData | null;
   accept: string;
   onChange: (file: File | null) => void;
@@ -994,7 +1016,7 @@ function FileUpload({
         </span>
       </p>
 
-      <p className="portal-block-text">{description}</p>
+      <div className="portal-block-text">{description}</div>
 
       <label className="portal-upload-drop">
         <input

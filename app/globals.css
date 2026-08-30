@@ -3346,6 +3346,16 @@ h3 {
   line-height: var(--leading-body);
 }
 
+.portal-note ol,
+.portal-note ul {
+  margin: 9px 0 0;
+  padding-left: 19px;
+}
+
+.portal-note li + li {
+  margin-top: 5px;
+}
+
 .portal-meta {
   margin-top: 15px;
 
@@ -3443,6 +3453,11 @@ h3 {
 
   font-size: var(--text-body-sm);
   line-height: var(--leading-body);
+}
+
+/* Where the text runs to more than one paragraph — the upload instructions. */
+.portal-block-text p + p {
+  margin-top: 9px;
 }
 
 
@@ -3951,27 +3966,21 @@ h3 {
    THE ISSUED AGREEMENT
    --------------------------------------------------------- */
 
-.portal-pdf {
-  overflow: hidden;
+/* The issued copy is loaded on the completion screen but never shown: it is
+   there only so Print can raise the browser's own print dialogue for the PDF.
+   Moved off screen at page size rather than hidden with `display: none`, which
+   would stop the PDF viewer loading at all — and so stop it printing. */
+.portal-pdf-print {
+  position: fixed;
+  top: 0;
+  left: -10000px;
 
-  margin-top: 18px;
-
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-
-  background: var(--color-background-soft);
-}
-
-.portal-pdf iframe {
-  display: block;
-
-  width: 100%;
-
-  /* Tall enough to read a page of the agreement, never taller than the screen
-     it is being read on. */
-  height: min(70svh, 620px);
+  width: 794px;
+  height: 1123px;
 
   border: 0;
+
+  pointer-events: none;
 }
 
 
