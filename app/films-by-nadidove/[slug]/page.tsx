@@ -39,12 +39,12 @@ export async function generateMetadata({
   return {
     title: film.title,
     description: film.logline,
-    alternates: { canonical: `/our-work/${film.slug}` },
+    alternates: { canonical: `/films-by-nadidove/${film.slug}` },
     openGraph: {
       type: "video.other",
       title: film.title,
       description: film.logline,
-      url: `/our-work/${film.slug}`,
+      url: `/films-by-nadidove/${film.slug}`,
       images: [{ url: poster, width: 1280, height: 720, alt: film.title }],
     },
     twitter: {
@@ -69,7 +69,7 @@ export default async function FilmPage({ params }: FilmPageProps) {
   return (
     <main id="main" className={`film-page film-tone-${film.tone}`}>
       <Container>
-        <Link href="/our-work" className="film-back">
+        <Link href="/films-by-nadidove" className="film-back">
           <span aria-hidden="true">←</span>
           Back to Films
         </Link>
@@ -100,7 +100,7 @@ export default async function FilmPage({ params }: FilmPageProps) {
               {others.map((entry) => (
                 <li key={entry.slug}>
                   <Link
-                    href={`/our-work/${entry.slug}`}
+                    href={`/films-by-nadidove/${entry.slug}`}
                     className="film-more-item"
                   >
                     <span className="film-more-number">{entry.number}</span>

@@ -19,11 +19,12 @@ const archivo = Archivo({
   display: "swap",
 });
 
-/** Used for one thing: the epigraph on the About page. */
+/** Used for one thing: the epigraph on the About page. Upright only — the
+ *  italic cut was dropped when that passage stopped being set in it. */
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
+  style: ["normal"],
   variable: "--font-instrument-serif",
   display: "swap",
 });

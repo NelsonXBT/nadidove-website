@@ -23,7 +23,7 @@ export const site = {
 } as const;
 
 export const navigation = [
-  { label: "Films", href: "/our-work" },
+  { label: "Films", href: "/films-by-nadidove" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;

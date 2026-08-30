@@ -1,6 +1,6 @@
 /**
  * The film catalogue. This is the only place film data lives — the homepage
- * reel, the Our Work gallery, each film page and the sitemap all read from
+ * reel, the films gallery, each film page and the sitemap all read from
  * here.
  *
  * ── Adding a film ──────────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ export interface FilmVideo {
 }
 
 export interface Film {
-  /** URL segment: /our-work/<slug>. Also the React key. */
+  /** URL segment: /films-by-nadidove/<slug>. Also the React key. */
   slug: string;
   /** Catalogue number shown on the card. */
   number: string;
@@ -167,7 +167,7 @@ export function primaryVideo(film: Film): FilmVideo {
   return film.videos[0];
 }
 
-/** Labels for the Our Work filter row. `all` is always first. */
+/** Labels for the films page filter row. `all` is always first. */
 export const categoryLabels: Record<FilmCategory | "all", string> = {
   all: "All",
   film: "Films",

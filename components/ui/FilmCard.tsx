@@ -33,7 +33,7 @@ export default function FilmCard({
 
   return (
     <article className={`film-card film-tone-${film.tone}`}>
-      <Link href={`/our-work/${film.slug}`} className="film-card-link">
+      <Link href={`/films-by-nadidove/${film.slug}`} className="film-card-link">
         <div className="film-card-media">
           <Image
             src={youtubeThumbnail(video.youtubeId, thumbnailQuality)}

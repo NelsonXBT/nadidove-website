@@ -16,7 +16,7 @@ export default function FilmsPreview() {
         <FilmGallery films={featuredFilms} />
 
         <Link
-          href="/our-work"
+          href="/films-by-nadidove"
           className="button button--secondary films-more"
         >
           View All Films

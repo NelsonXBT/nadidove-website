@@ -12,13 +12,13 @@ export const metadata: Metadata = {
   title: "Films",
   description:
     "The Nadidove catalogue — original short films and animations written, directed and generated in-house.",
-  alternates: { canonical: "/our-work" },
+  alternates: { canonical: "/films-by-nadidove" },
 };
 
 export default function OurWorkPage() {
   return (
     <main id="main">
-      <section className="page-intro">
+      <section className="page-intro page-intro--films">
         <Container>
           <h1 className="heading-xl">Films</h1>
         </Container>

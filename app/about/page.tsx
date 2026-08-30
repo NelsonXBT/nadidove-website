@@ -144,7 +144,7 @@ export default function AboutPage() {
           </div>
 
           <div className="page-cta-actions">
-            <Link href="/our-work" className="button button--primary">
+            <Link href="/films-by-nadidove" className="button button--primary">
               View Our Films
               <span aria-hidden="true">→</span>
             </Link>

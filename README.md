@@ -23,7 +23,7 @@ The site runs at [http://localhost:3000](http://localhost:3000).
 
 ## Adding a film
 
-Every film on the site — the homepage reel, the Our Work gallery and the
+Every film on the site — the homepage reel, the films gallery and the
 sitemap — is read from one array in [`lib/films.ts`](lib/films.ts). Add an entry
 there and it appears everywhere.
 
@@ -63,7 +63,7 @@ To override the auto-pulled poster, drop an image in `public/` and set
 
 ### Category filters
 
-The Our Work filter row is generated from the films actually present, so a
+The films page filter row is generated from the films actually present, so a
 category with nothing behind it never renders an empty grid. Adding the first
 `"animation"` film makes the **Animations** filter appear on its own.
 

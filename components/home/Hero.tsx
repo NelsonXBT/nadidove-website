@@ -18,7 +18,7 @@ export default function Hero() {
         </h1>
 
         <div className="hero-action">
-          <Link href="/our-work" className="button button--primary">
+          <Link href="/films-by-nadidove" className="button button--primary">
             View Our Films
           </Link>
         </div>

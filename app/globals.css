@@ -83,8 +83,11 @@
   --text-h2: clamp(1.5rem, 2.4vw, 2rem);
   --text-h3: clamp(1.05rem, 1.2vw, 1.1875rem);
 
-  /* The one serif voice: the About epigraph. */
-  --text-epigraph: clamp(1.2rem, 1.9vw, 1.625rem);
+  /* The one serif voice: the About epigraph. Set upright rather than italic,
+     so it can carry a long passage without tiring the eye — which means it
+     needs more size than an italic aside did to still read as a statement
+     rather than as body copy. */
+  --text-epigraph: clamp(1.4rem, 2.5vw, 2.0625rem);
 
   /* The contact address — sized to fit the narrowest column it appears in. */
   --text-address: clamp(1.2rem, 1.8vw, 1.625rem);
@@ -1799,6 +1802,20 @@ h3 {
   letter-spacing: var(--track-display);
 }
 
+/* The films page is a one-word title above a filter row, not a statement page.
+   At full display size "Films" was a slab with a canyon under it, so here the
+   title drops to the size the home page gives "Our Films" and sits down closer
+   to the filters it belongs to — more air above it, much less below. The 404
+   page shares `.page-intro` and wants the display size, hence the modifier. */
+.page-intro--films {
+  padding-top: calc(var(--header-height) + 46px);
+  padding-bottom: 26px;
+}
+
+.page-intro--films .heading-xl {
+  font-size: var(--text-h2);
+}
+
 .page-intro .body-lg {
   max-width: 620px;
 
@@ -2466,10 +2483,16 @@ h3 {
 
 /* The opening passage is an epigraph — a claim about filmmaking at large,
    not part of the studio description beneath it. So it is set apart by voice
-   rather than by weight: the design system's serif, italic, at a *lighter*
-   weight than the sans description around it, closed off by a hairline. */
+   rather than by weight: the design system's serif, at a *lighter* weight than
+   the sans description around it, closed off by a hairline.
+
+   It is upright, not italic. Italic is the obvious way to mark an aside, but
+   this passage is five lines of dense clauses — locations, equipment, travel,
+   time — and a high-contrast display serif slanted over that length is work to
+   read. Upright keeps the serif's difference from the sans around it while
+   giving the letterforms back their normal shape. */
 .statement-lead {
-  padding-bottom: 22px;
+  padding-bottom: 26px;
 
   border-bottom: 1px solid var(--color-border);
 
@@ -2477,13 +2500,15 @@ h3 {
 
   font-family: var(--font-serif);
   font-size: var(--text-epigraph);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
 
   /* Serif at display size wants air, and none of the negative tracking that
-     suits the tight sans headings elsewhere. */
-  line-height: var(--leading-snug);
-  letter-spacing: var(--track-tight);
+     suits the tight sans headings elsewhere — Instrument Serif's thin strokes
+     start closing up on each other under it. A hair of positive tracking and a
+     looser line than `--leading-snug` is what makes the passage scannable. */
+  line-height: 1.45;
+  letter-spacing: 0.005em;
 }
 
 
@@ -2910,6 +2935,11 @@ h3 {
     padding-bottom: 55px;
   }
 
+  .page-intro--films {
+    padding-top: calc(var(--header-height) + 22px);
+    padding-bottom: 22px;
+  }
+
   .films-section {
     padding-bottom: 80px;
   }
@@ -2988,6 +3018,11 @@ h3 {
        was sitting behind it. */
     padding-top: calc(var(--header-height) + 24px);
     padding-bottom: 40px;
+  }
+
+  .page-intro--films {
+    padding-top: calc(var(--header-height) + 26px);
+    padding-bottom: 18px;
   }
 
   .page-intro .eyebrow {
@@ -3084,8 +3119,8 @@ h3 {
   }
 
   .statement-lead {
-    padding-bottom: 16px;
-    line-height: var(--leading-snug);
+    padding-bottom: 18px;
+    line-height: 1.4;
   }
 
   .statement-body p + p {

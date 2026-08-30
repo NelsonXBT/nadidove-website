@@ -5,7 +5,7 @@ import { navigation, site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = ["/", ...navigation.map((item) => item.href)];
-  const filmPages = films.map((film) => `/our-work/${film.slug}`);
+  const filmPages = films.map((film) => `/films-by-nadidove/${film.slug}`);
 
   // Evaluated once at build time, so every entry reports the same deploy
   // date rather than drifting apart across the list.

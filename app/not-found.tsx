@@ -21,7 +21,7 @@ export default function NotFound() {
           </p>
 
           <div className="not-found-actions">
-            <Link href="/our-work" className="button button--primary">
+            <Link href="/films-by-nadidove" className="button button--primary">
               View Our Films
               <span aria-hidden="true">→</span>
             </Link>
