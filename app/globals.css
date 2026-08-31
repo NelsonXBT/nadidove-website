@@ -2448,9 +2448,13 @@ h3 {
    That air belongs here rather than on `.statement-lead`: the label and the
    passage are two columns of one grid row, and a top margin on the passage
    alone would drop it below the label it is set to line up with. Padding on
-   the section moves both columns together. */
+   the section moves both columns together.
+
+   This is the largest header clearance on the site by some way. It is meant to
+   be: the page opens on a single passage with no display headline above it, so
+   the empty space is doing the work a title would do elsewhere. */
 .statement {
-  padding-top: calc(var(--header-height) + 48px);
+  padding-top: calc(var(--header-height) + 76px);
 
   border-bottom: 1px solid var(--color-border);
 }
@@ -2976,7 +2980,7 @@ h3 {
   }
 
   .statement {
-    padding-top: calc(var(--header-height) + 36px);
+    padding-top: calc(var(--header-height) + 52px);
   }
 
   .statement-inner {
@@ -3142,7 +3146,7 @@ h3 {
   }
 
   .statement {
-    padding-top: calc(var(--header-height) + 30px);
+    padding-top: calc(var(--header-height) + 42px);
   }
 
   .statement-lead {
@@ -3451,6 +3455,18 @@ h3 {
 .portal-note ul {
   margin: 9px 0 0;
   padding-left: 19px;
+}
+
+/* Tailwind's preflight sets `list-style: none` on every `ol`/`ul`, so a list
+   that wants its markers has to ask for them back — the `padding-left` above
+   only reserves the room they sit in. Without this the numbered steps on the
+   registration welcome screen render as an unmarked block of sentences. */
+.portal-note ol {
+  list-style: decimal;
+}
+
+.portal-note ul {
+  list-style: disc;
 }
 
 .portal-note li + li {
