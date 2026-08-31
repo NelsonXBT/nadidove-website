@@ -2526,10 +2526,16 @@ h3 {
 
   /* Serif at display size wants air, and none of the negative tracking that
      suits the tight sans headings elsewhere — Instrument Serif's thin strokes
-     start closing up on each other under it. A hair of positive tracking and a
-     looser line than `--leading-snug` is what makes the passage scannable. */
+     start closing up on each other under it. Positive tracking and a looser
+     line than `--leading-snug` is what makes the passage scannable.
+
+     Opened from 0.005em: now that the colour is eased back the strokes are
+     lighter, and the letters need a little more room between them to stay
+     distinct at reading distance. Kept in `em` so it stays proportional as
+     `--text-epigraph` clamps down to the phone — a fixed `px` value would
+     read as loose at 22px and tight at 33px. */
   line-height: 1.45;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.015em;
 }
 
 
