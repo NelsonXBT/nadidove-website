@@ -2507,13 +2507,17 @@ h3 {
 
   border-bottom: 1px solid var(--color-border);
 
-  /* Instrument Serif ships one cut — 400 — so `font-weight` has nothing
-     lighter to reach for and a lower value would render identically. What does
-     take weight out of it is colour: at display size, near-white on this
-     background blooms and reads heavier than it measures, so easing off the
-     opacity thins the strokes optically. Still well clear of
-     `--color-text-muted`, which is the body copy beneath. */
-  color: rgba(242, 238, 232, 0.84);
+  /* Instrument Serif ships one cut — 400, upright and italic, with no variable
+     axis — so `font-weight` has nothing lighter to reach for and a lower value
+     renders identically. What does take weight out of it is colour: at display
+     size, near-white on this background blooms and reads heavier than it
+     measures, so easing off the alpha thins the strokes optically.
+
+     0.72 sits between `--color-text` and the 0.62 of `--color-text-muted`
+     beneath it: light enough to pass for a thinner cut, still tonally ahead of
+     the body copy it opens. It measures 9:1 on `--color-background`, so there
+     is contrast headroom to go lighter still if it reads heavy. */
+  color: rgba(242, 238, 232, 0.72);
 
   font-family: var(--font-serif);
   font-size: var(--text-epigraph);
