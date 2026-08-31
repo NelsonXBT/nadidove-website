@@ -104,8 +104,10 @@
   --text-button: 0.75rem;
 
   /* The header keeps the size it had before the type scale was reduced —
-     the wordmark and nav links are deliberately excluded from that pass. */
-  --text-logo: clamp(1.15rem, 1.8vw, 1.55rem);
+     the wordmark and nav links are deliberately excluded from that pass.
+     Stepped up 10% so the wordmark carries more presence in the bar; the
+     weight is untouched, this is size only. */
+  --text-logo: clamp(1.265rem, 1.98vw, 1.705rem);
 
   /* Tracking. Display type tightens, small caps open up. */
   --track-display: -0.04em;
@@ -1625,8 +1627,11 @@ h3 {
     z-index: 1001;
   }
 
+  /* Matched to the desktop wordmark's 10% step up — the phone header drops to
+     the h3 size, so the same factor is applied to it rather than to the shared
+     `--text-h3` token, which every h3 on the site reads from. */
   .site-logo {
-    font-size: var(--text-h3);
+    font-size: calc(var(--text-h3) * 1.1);
     letter-spacing: var(--track-button);
   }
 
@@ -2437,9 +2442,15 @@ h3 {
    ========================================================= */
 
 /* This is the first section on the About page — there is no intro block above
-   it — so it reserves the fixed header's height itself. */
+   it — so it reserves the fixed header's height itself, plus a beat of air so
+   the epigraph does not open hard against the header.
+
+   That air belongs here rather than on `.statement-lead`: the label and the
+   passage are two columns of one grid row, and a top margin on the passage
+   alone would drop it below the label it is set to line up with. Padding on
+   the section moves both columns together. */
 .statement {
-  padding-top: calc(var(--header-height) + 28px);
+  padding-top: calc(var(--header-height) + 48px);
 
   border-bottom: 1px solid var(--color-border);
 }
@@ -2496,7 +2507,13 @@ h3 {
 
   border-bottom: 1px solid var(--color-border);
 
-  color: var(--color-text);
+  /* Instrument Serif ships one cut — 400 — so `font-weight` has nothing
+     lighter to reach for and a lower value would render identically. What does
+     take weight out of it is colour: at display size, near-white on this
+     background blooms and reads heavier than it measures, so easing off the
+     opacity thins the strokes optically. Still well clear of
+     `--color-text-muted`, which is the body copy beneath. */
+  color: rgba(242, 238, 232, 0.84);
 
   font-family: var(--font-serif);
   font-size: var(--text-epigraph);
@@ -2949,7 +2966,7 @@ h3 {
   }
 
   .statement {
-    padding-top: calc(var(--header-height) + 22px);
+    padding-top: calc(var(--header-height) + 36px);
   }
 
   .statement-inner {
@@ -3115,7 +3132,7 @@ h3 {
   }
 
   .statement {
-    padding-top: calc(var(--header-height) + 18px);
+    padding-top: calc(var(--header-height) + 30px);
   }
 
   .statement-lead {
