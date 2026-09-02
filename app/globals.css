@@ -485,6 +485,16 @@ h3 {
    HEADER
    ========================================================= */
 
+/* The nav pill's traveling light is a rotated conic gradient, and an angle only
+   animates if the custom property holding it is registered with a type — an
+   unregistered one is a string and jumps from 0 to 360 in one frame. Has to sit
+   at the top level; `@property` is not valid inside a rule or a media query. */
+@property --nav-beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .site-header {
   position: fixed;
   top: 0;
@@ -555,10 +565,80 @@ h3 {
   opacity: 0.7;
 }
 
+/* The nav links sit in their own compact pill rather than loose in the bar, so
+   the group reads as one object over the hero footage instead of six separate
+   words competing with it. The ground is dark and blurred at any scroll
+   position — the header's own `--scrolled` ground sits behind this one. */
 .site-nav {
+  position: relative;
+
   display: flex;
   align-items: center;
-  gap: clamp(24px, 3vw, 42px);
+  gap: clamp(22px, 2.6vw, 36px);
+
+  /* 11px against an 11px cap-height line box is a ~35px pill: tall enough to
+     contain the links, short enough that it stays a detail in the bar. */
+  padding: 11px clamp(22px, 2.4vw, 32px);
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: rgba(10, 10, 9, 0.55);
+
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+}
+
+/* The light that travels the pill's edge.
+
+   A conic gradient rotated by an animated angle, then masked down to the 1px
+   band the parent's border occupies — `inset: -1px` grows this box from the
+   parent's padding box back out to its border box, so the beam rides exactly
+   over that hairline rather than just inside it. The border underneath is what
+   the pill falls back to in a browser that can't register the angle. */
+.site-nav::before {
+  content: "";
+
+  position: absolute;
+  inset: -1px;
+
+  border-radius: inherit;
+  padding: 1px;
+
+  /* Mostly empty, so what sweeps past is a single soft head with a long tail
+     behind it — a low light, not a chasing marquee. */
+  background: conic-gradient(
+    from var(--nav-beam-angle),
+    rgba(242, 238, 232, 0) 0deg,
+    rgba(242, 238, 232, 0) 252deg,
+    rgba(242, 238, 232, 0.06) 292deg,
+    rgba(242, 238, 232, 0.34) 336deg,
+    rgba(242, 238, 232, 0.72) 352deg,
+    rgba(242, 238, 232, 0.14) 357deg,
+    rgba(242, 238, 232, 0) 360deg
+  );
+
+  /* Keeps the fill and lets only the 1px frame through. The `mask` shorthands
+     reset `mask-composite`, so both composites have to be declared after both
+     of them. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: nav-beam 9s linear infinite;
+
+  pointer-events: none;
+}
+
+@keyframes nav-beam {
+  to {
+    --nav-beam-angle: 360deg;
+  }
 }
 
 .site-nav a {
@@ -568,6 +648,11 @@ h3 {
 
   font-size: var(--text-label);
   font-weight: 500;
+
+  /* The pill's height is set from the links, so they give up the body leading
+     they'd otherwise inherit — 1.6 lines of it is dead space in a bar. */
+  line-height: 1;
+
   letter-spacing: var(--track-button);
   text-transform: uppercase;
 
@@ -579,7 +664,7 @@ h3 {
 
   position: absolute;
   left: 0;
-  bottom: -8px;
+  bottom: -6px;
 
   width: 100%;
   height: 1px;
@@ -1633,6 +1718,12 @@ h3 {
   .site-logo {
     font-size: calc(var(--text-h3) * 1.1);
     letter-spacing: var(--track-button);
+
+    /* `.header-inner` keeps its 10% inline padding on a phone, which at 390px
+       is 39px — more inset than the wordmark needs against a narrow frame. It
+       is pulled back out on this side only, so the hamburger's own alignment
+       on the right is left alone. */
+    margin-left: -14px;
   }
 
   /* Hide desktop navigation */
@@ -1668,6 +1759,7 @@ h3 {
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Three equal bars. */
   .mobile-menu-button span {
     display: block;
 
@@ -1678,12 +1770,7 @@ h3 {
 
     transition:
       transform 0.25s ease,
-      opacity 0.25s ease,
-      width 0.25s ease;
-  }
-
-  .mobile-menu-button span:nth-child(2) {
-    width: 17px;
+      opacity 0.25s ease;
   }
 
   /* Hamburger becomes X */
@@ -1696,7 +1783,6 @@ h3 {
   }
 
   .mobile-menu-button.is-open span:nth-child(3) {
-    width: 24px;
     transform: translateY(-6px) rotate(-45deg);
   }
 
