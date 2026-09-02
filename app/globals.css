@@ -669,7 +669,12 @@ h3 {
   width: 100%;
   height: 1px;
 
-  background: var(--color-text);
+  /* Brand red rather than the text colour, so the underline reads as the
+     accent and not as more type. Set on the base rule instead of on `:hover`
+     so the colour is already correct as the line wipes in — swapping it in the
+     hover rule alone would snap it back to white on the way out, while the
+     line is still retracting. */
+  background: var(--color-accent-hover);
 
   transform: scaleX(0);
   transform-origin: right;
@@ -732,6 +737,16 @@ h3 {
 
   overflow: hidden;
 
+  /* HeroMedia starts the next clip this far before the current one ends and
+     spends exactly this long dissolving it in, so the two have to agree. The
+     component reads the same number from its own FADE_MS — change both. */
+  --hero-fade: 900ms;
+
+  /* Holds the clips' repaints inside this box. Without it a clip that is both
+     playing and mid-dissolve can force the hero's whole layer to re-rasterise,
+     which shows up as tearing across the frame. */
+  contain: paint;
+
   background: #080807;
 }
 
@@ -752,13 +767,21 @@ h3 {
 /* Poster is visible immediately while video loads */
 
 .hero-media-poster {
+  z-index: 0;
+
   opacity: 1;
 
-  transition: opacity 700ms var(--ease-out);
+  /* Fading the poster out *while* the first clip fades in is what put a dark
+     pulse on load. Two half-transparent layers over a near-black backdrop
+     composite to less than either of them alone, so at the midpoint roughly a
+     third of the frame was the backdrop showing through both. The delay parks
+     the poster at full opacity until the clip above it is completely opaque —
+     by then nothing can see the poster, so its fade costs nothing. */
+  transition: opacity 400ms var(--ease-out) var(--hero-fade);
 }
 
 
-/* Once video is ready, fade the poster away */
+/* Once the video fully covers it, the poster can go */
 
 .hero-media-poster-hidden {
   opacity: 0;
@@ -768,16 +791,41 @@ h3 {
 /* Video starts invisible so there is no ugly loading flash */
 
 .hero-media-video {
+  z-index: 1;
+
   opacity: 0;
 
-  transition: opacity 900ms var(--ease-out);
+  /* Keeps each clip on its own compositing layer. A `<video>` that is scaled
+     by `object-fit` and animated at the same time otherwise gets re-rasterised
+     frame by frame, which reads as a flicker through the dissolve. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: opacity;
+
+  transition: opacity var(--hero-fade) var(--ease-out);
 }
 
 
-/* Video becomes visible only after it can actually play */
+/* The clip coming in. It dissolves over whatever is beneath it — clips only
+   ever fade in, never out, for the same compositing reason as the poster. */
 
-.hero-media-video-visible {
+.hero-media-video-active {
+  z-index: 2;
+
   opacity: 1;
+}
+
+
+/* The clip going out. It keeps playing at full opacity underneath the incoming
+   one until that one is completely opaque, then it is dropped. No fade of its
+   own: there is nothing left to see by the time it goes. */
+
+.hero-media-video-under {
+  z-index: 1;
+
+  opacity: 1;
+
+  transition: none;
 }
 
 
@@ -789,7 +837,10 @@ h3 {
   position: absolute;
   inset: 0;
 
-  z-index: 2;
+  /* Above both clip layers. The incoming clip climbs to 2 during a dissolve,
+     so this has to clear that or the overlay drops out for the length of every
+     transition. */
+  z-index: 3;
 
   pointer-events: none;
 
